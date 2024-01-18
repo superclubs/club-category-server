@@ -257,8 +257,3 @@ class Post(PostCommentModelMixin,
             for post_tag in post_tags:
                 post_tag.tag.decrease_tag_post_count()
                 post_tag.tag.save()
-
-    def delete(self, *args, request=None, **kwargs):
-        self.is_deleted = True
-        self.save()
-        return

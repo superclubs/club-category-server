@@ -5,7 +5,6 @@ from django.utils.translation import gettext_lazy as _
 from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.exceptions import ParseError
-from rest_framework.permissions import IsAuthenticated
 from django_filters.rest_framework import DjangoFilterBackend
 
 # Third Party
@@ -157,7 +156,7 @@ class PostViewSet(mixins.RetrieveModelMixin,
                                              ))
     def destroy(self, request, *args, **kwargs):
         instance = self.get_object()
-        instance.delete(request=self.request)
+        instance.soft_delete()
         return Response(
             status=status.HTTP_204_NO_CONTENT,
             code=204,
@@ -174,7 +173,7 @@ class PostViewSet(mixins.RetrieveModelMixin,
         post = self.get_object()
         if not post.is_temporary:
             raise ParseError('임시글이 아닙니다.')
-        post.delete()
+        post.soft_delete()
         return Response(
             status=status.HTTP_204_NO_CONTENT,
             code=204,
