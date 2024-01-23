@@ -26,7 +26,7 @@ class CommunityRetrieveSerializer(ModelSerializer):
         user = request.user
         if not user.id:
             return None
-        community_user = obj.community_users.filter(user=user, is_active=True).first()
+        community_user = obj.community_users.filter(user=user, is_active=True, is_deleted=False).first()
         if not community_user:
             return False
         return True

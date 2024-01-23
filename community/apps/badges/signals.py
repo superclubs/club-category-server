@@ -14,7 +14,7 @@ def cache_image(sender, instance, *args, **kwargs):
     image = None
 
     if instance.id:
-        badge = Badge.objects.get(id=instance.id)
+        badge = Badge.available.get(id=instance.id)
         image = badge.image
 
     instance.__image = image

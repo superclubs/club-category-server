@@ -11,4 +11,4 @@ from community.apps.reports.models import ReportGroup
 # Main Section
 class ReportGroupAdminViewSet(GenericViewSet):
     filter_backends = (DjangoFilterBackend,)
-    queryset = ReportGroup.objects.all()
+    queryset = ReportGroup.available.all()

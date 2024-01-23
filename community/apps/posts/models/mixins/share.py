@@ -20,7 +20,7 @@ class PostShareModelMixin(models.Model):
         self.share_count = self.share_count - 1
 
     def update_post_share_count(self):
-        self.share_count = self.post_shares.filter(is_active=True).count()
+        self.share_count = self.post_shares.filter(is_active=True, is_deleted=False).count()
 
     def share_post(self, user, link):
         return PostShare.objects.create(user=user, post=self, link=link)

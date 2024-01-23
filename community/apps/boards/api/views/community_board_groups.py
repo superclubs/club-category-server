@@ -29,7 +29,7 @@ class CommunityBoardGroupsViewSet(mixins.ListModelMixin,
     def get_queryset(self):
         if getattr(self, 'swagger_fake_view', False):
             return None
-        queryset = BoardGroup.objects.filter(community=self.kwargs["community_pk"])
+        queryset = BoardGroup.available.filter(community=self.kwargs["community_pk"])
         return queryset
 
     @swagger_auto_schema(**swagger_decorator(tag='02. 커뮤니티',
@@ -50,7 +50,7 @@ class CommunityBoardGroupsWriteViewSet(mixins.ListModelMixin,
     def get_queryset(self):
         if getattr(self, 'swagger_fake_view', False):
             return None
-        queryset = BoardGroup.objects.filter(community=self.kwargs["community_pk"])
+        queryset = BoardGroup.available.filter(community=self.kwargs["community_pk"])
         return queryset
 
     @swagger_auto_schema(**swagger_decorator(tag='02. 커뮤니티',

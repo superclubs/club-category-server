@@ -43,7 +43,7 @@ class BoardPostsViewSet(mixins.ListModelMixin,
         if getattr(self, 'swagger_fake_view', False):
             return None
         board_id = self.kwargs["board_pk"]
-        board = Board.objects.get(id=board_id)
+        board = Board.available.get(id=board_id)
         if board.title == 'All':
             queryset = Post.active.filter_readonly(user=self.request.user)
             queryset = queryset.filter(community=board.community)

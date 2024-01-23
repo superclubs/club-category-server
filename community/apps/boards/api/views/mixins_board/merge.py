@@ -28,7 +28,7 @@ class BoardMergeViewMixin:
     def board_merge(self, request, pk=None):
         board = self.get_object()
 
-        request_board = Board.objects.get(id=request.data['id'])
+        request_board = Board.available.get(id=request.data['id'])
 
         if board.posts.count() + request_board.posts.count() > 10:
             raise ParseError('There are more than 10 posts on both boards.')
@@ -38,7 +38,7 @@ class BoardMergeViewMixin:
         request_board.save()
 
         board.posts.update(board=request_board)
-        board.delete()
+        board.soft_delete()
 
         return Response(
             status=status.HTTP_200_OK,

@@ -33,7 +33,7 @@ class BoardGroupOrderViewMixin:
         board_group_order = board_group.order
         request_order = request.data['order']
         if board_group.community.user == request.user:
-            board_groups = BoardGroup.objects.filter(community=board_group.community.id)
+            board_groups = BoardGroup.available.filter(community=board_group.community.id)
             if board_group_order > request_order:
                 board_groups.filter(order__gte=request_order,
                                     order__lte=board_group_order).update(order=F('order') + 1)

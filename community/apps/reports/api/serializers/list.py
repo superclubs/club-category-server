@@ -30,5 +30,5 @@ class ReportGroupListSerializer(ModelSerializer):
                   'is_deactivated', 'deactivated_at')
 
     def get_reporters(self, obj):
-        reports = obj.reports.filter(is_active=True).order_by('-created')[:3]
+        reports = obj.reports.filter(is_active=True, is_deleted=False).order_by('-created')[:3]
         return ReportSerializer(instance=reports, many=True).data

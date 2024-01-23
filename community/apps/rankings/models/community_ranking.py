@@ -18,7 +18,7 @@ class ClubRankingManager(RankingManager):
     def create_rankings(self, prev_ranking_group, new_ranking_group):
 
         # 1. Get all communities
-        communities = Community.objects.all()
+        communities = Community.available.all()
         community_count = communities.count()
 
         # 2. Get prev_rankings
@@ -36,7 +36,7 @@ class ClubRankingManager(RankingManager):
             old_point_rank = 0
 
             if prev_rankings:
-                if ranking_old := prev_rankings.filter(community=community).first():
+                if ranking_old := prev_rankings.filter(community=community, is_active=True, is_deleted=False).first():
                     old_rank = ranking_old.rank
                     old_point = ranking_old.point
                     old_point_rank = ranking_old.point_rank
@@ -73,10 +73,10 @@ class ClubRankingManager(RankingManager):
             ranking.rank_change = ranking.old_rank - ranking.rank
 
         # TODO: 리팩토링
-        live_badge = Badge.objects.get(title='Live Best', model_type='CLUB')
-        weekly_badge = Badge.objects.get(title='Weekly Best', model_type='CLUB')
-        monthly_badge = Badge.objects.get(title='Monthly Best', model_type='CLUB')
-        rising_badge = Badge.objects.get(title='Rising Club', model_type='CLUB')
+        live_badge = Badge.available.get(title='Live Best', model_type='CLUB')
+        weekly_badge = Badge.available.get(title='Weekly Best', model_type='CLUB')
+        monthly_badge = Badge.available.get(title='Monthly Best', model_type='CLUB')
+        rising_badge = Badge.available.get(title='Rising Club', model_type='CLUB')
 
         # 6. Update community ranking
         for index, ranking in enumerate(ranking_list):
@@ -85,18 +85,18 @@ class ClubRankingManager(RankingManager):
                 ranking.community.live_rank = ranking.rank
                 ranking.community.live_rank_change = ranking.rank_change
 
-                if ranking.community.live_rank < 11 and not ranking.community.badges.filter(id=live_badge.id):
+                if ranking.community.live_rank < 11 and not ranking.community.badges.filter(id=live_badge.id, is_active=True, is_deleted=False):
                     ranking.community.badges.add(live_badge.id)
-                if ranking.community.live_rank > 10 and ranking.community.badges.filter(id=live_badge.id):
+                if ranking.community.live_rank > 10 and ranking.community.badges.filter(id=live_badge.id, is_active=True, is_deleted=False):
                     ranking.community.badges.remove(live_badge)
 
             elif new_ranking_group.ranking_type == 'WEEKLY':
                 ranking.community.weekly_rank = ranking.rank
                 ranking.community.weekly_rank_change = ranking.rank_change
 
-                if ranking.community.weekly_rank < 11 and not ranking.community.badges.filter(id=weekly_badge.id):
+                if ranking.community.weekly_rank < 11 and not ranking.community.badges.filter(id=weekly_badge.id, is_active=True, is_deleted=False):
                     ranking.community.badges.add(weekly_badge.id)
-                if ranking.community.weekly_rank > 10 and ranking.community.badges.filter(id=weekly_badge.id):
+                if ranking.community.weekly_rank > 10 and ranking.community.badges.filter(id=weekly_badge.id, is_active=True, is_deleted=False):
                     ranking.community.badges.remove(weekly_badge)
 
             elif new_ranking_group.ranking_type == 'MONTHLY':

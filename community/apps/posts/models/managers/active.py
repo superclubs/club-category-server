@@ -8,7 +8,7 @@ from community.apps.posts.models.managers.objects import PostMainManager
 
 # Main Section
 class PostActiveManager(PostMainManager):
-    conditions_default = Q(is_active=True)
+    conditions_default = Q(is_active=True, is_deleted=False)
 
     def filter_readonly(self, user=None):
         conditions_public = Q(public_type='PUBLIC') & (

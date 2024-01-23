@@ -92,4 +92,4 @@ class DestroyModelMixin:
         )
 
     def perform_destroy(self, instance):
-        instance.delete()
+        instance.soft_delete()

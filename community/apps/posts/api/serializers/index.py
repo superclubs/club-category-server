@@ -30,7 +30,7 @@ class PostContentSummarySerializer(ModelSerializer):
             return None
         if obj.user == user:
             return None
-        friend = obj.user.receiver_friends.filter(sender=user, is_active=True).first()
+        friend = obj.user.receiver_friends.filter(sender=user, is_active=True, is_deleted=False).first()
         if not friend:
             return None
         else:
@@ -65,7 +65,7 @@ class PostLikeResponseSerializer(ModelSerializer):
         user = request.user
         if not user.id:
             return None
-        post_like = obj.post_likes.filter(user=user, is_active=True).first()
+        post_like = obj.post_likes.filter(user=user, is_active=True, is_deleted=False).first()
         if not post_like:
             return False
         return True
@@ -77,11 +77,11 @@ class PostLikeResponseSerializer(ModelSerializer):
         user = request.user
         if not user.id:
             return None
-        post_dislike = obj.post_dislikes.filter(user=user, is_active=True).first()
+        post_dislike = obj.post_dislikes.filter(user=user, is_active=True, is_deleted=False).first()
         if not post_dislike:
             return False
         return True
 
     def get_liked_users(self, obj):
-        post_likes = obj.post_likes.filter(is_active=True)[:3]
+        post_likes = obj.post_likes.filter(is_active=True, is_deleted=False)[:3]
         return PostLikeSerializer(instance=post_likes, many=True, context={'request': self.context['request']}).data

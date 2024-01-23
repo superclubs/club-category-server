@@ -13,15 +13,15 @@ class PostTagModelMixin(models.Model):
         abstract = True
 
     def create_post_tag(self, index, tag):
-        tag, created = Tag.objects.get_or_create(title=tag.lower().replace(' ', ''))
-        post_tag, created = PostTag.objects.get_or_create(post=self, tag=tag)
+        tag, created = Tag.available.get_or_create(title=tag.lower().replace(' ', ''))
+        post_tag, created = PostTag.available.get_or_create(post=self, tag=tag)
         post_tag.update(order=index, title=tag.title)
 
     def update_post_tag(self, tags):
-        PostTag.objects.filter(post=self).filter(~Q(tag__title__in=tags)).delete()
+        PostTag.available.filter(post=self).filter(~Q(tag__title__in=tags)).soft_delete()
         for index, tag in enumerate(tags):
-            tag, created = Tag.objects.get_or_create(title=tag.lower().replace(' ', ''))
+            tag, created = Tag.available.get_or_create(title=tag.lower().replace(' ', ''))
             if created:
                 print('[Post] update_post_tag', tag, '생성')
-            post_tag, created = PostTag.objects.get_or_create(post=self, tag=tag)
+            post_tag, created = PostTag.available.get_or_create(post=self, tag=tag)
             post_tag.update(order=index, title=tag.title)

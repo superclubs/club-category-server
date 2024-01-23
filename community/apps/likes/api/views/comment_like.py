@@ -29,7 +29,7 @@ class CommentLikesViewSet(mixins.ListModelMixin,
     def get_queryset(self):
         if getattr(self, 'swagger_fake_view', False):
             return None
-        queryset = CommentLike.objects.filter(comment=self.kwargs["comment_pk"], is_active=True)
+        queryset = CommentLike.available.filter(comment=self.kwargs["comment_pk"], is_active=True, is_deleted=False)
         return queryset
 
     @swagger_auto_schema(**swagger_decorator(tag='04. 댓글',

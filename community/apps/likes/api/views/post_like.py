@@ -29,7 +29,7 @@ class PostLikesViewSet(mixins.ListModelMixin,
     def get_queryset(self):
         if getattr(self, 'swagger_fake_view', False):
             return None
-        queryset = PostLike.objects.filter(post=self.kwargs["post_pk"], is_active=True)
+        queryset = PostLike.available.filter(post=self.kwargs["post_pk"], is_active=True, is_deleted=False)
         return queryset
 
     @swagger_auto_schema(**swagger_decorator(tag='03. 포스트',

@@ -29,7 +29,7 @@ class PostCommentViewMixin:
         user = request.user
         post = self.get_object()
 
-        profile = post.community.profiles.filter(user=user).first()
+        profile = post.community.profiles.filter(user=user, is_active=True, is_deleted=False).first()
 
         serializer = CommentCreateSerializer(data=request.data)
         if serializer.is_valid(raise_exception=True):

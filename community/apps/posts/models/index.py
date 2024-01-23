@@ -38,14 +38,14 @@ from community.apps.posts.tasks import delete_post_task
 class PostBadgeManager(Manager):
     def get_new_badge(self):
         # 1. Get New Badge
-        new_badge = Badge.objects.get(title='New', model_type='POST')
+        new_badge = Badge.available.get(title='New', model_type='POST')
 
         # 2. Get Posts
         date = now() - timedelta(days=7)
         q_created = Q(created__gte=date)
         q_badge = Q(badges=new_badge)
-        new_posts = Post.objects.filter(q_created & ~q_badge)
-        old_posts = Post.objects.filter(~q_created & q_badge)
+        new_posts = Post.available.filter(q_created & ~q_badge)
+        old_posts = Post.available.filter(~q_created & q_badge)
 
         # 3. Update
         for post in new_posts:
@@ -56,21 +56,21 @@ class PostBadgeManager(Manager):
 
     def get_grade_badge(self):
 
-        nice_badge = Badge.objects.get(title='Nice', model_type='POST')
-        good_badge = Badge.objects.get(title='Good', model_type='POST')
-        excellent_badge = Badge.objects.get(title='Excellent', model_type='POST')
-        great_badge = Badge.objects.get(title='Great', model_type='POST')
-        wonderful_badge = Badge.objects.get(title='Wonderful', model_type='POST')
-        fantastic_badge = Badge.objects.get(title='Fantastic', model_type='POST')
-        amazing_badge = Badge.objects.get(title='Amazing', model_type='POST')
+        nice_badge = Badge.available.get(title='Nice', model_type='POST')
+        good_badge = Badge.available.get(title='Good', model_type='POST')
+        excellent_badge = Badge.available.get(title='Excellent', model_type='POST')
+        great_badge = Badge.available.get(title='Great', model_type='POST')
+        wonderful_badge = Badge.available.get(title='Wonderful', model_type='POST')
+        fantastic_badge = Badge.available.get(title='Fantastic', model_type='POST')
+        amazing_badge = Badge.available.get(title='Amazing', model_type='POST')
 
-        nice_posts = Post.objects.filter(Q(point__range=[100, 499]), ~Q(badges=nice_badge))
-        good_posts = Post.objects.filter(Q(point__range=[500, 999]), ~Q(badges=good_badge))
-        excellent_posts = Post.objects.filter(Q(point__range=[1000, 2999]), ~Q(badges=excellent_badge))
-        great_posts = Post.objects.filter(Q(point__range=[3000, 4999]), ~Q(badges=great_badge))
-        wonderful_posts = Post.objects.filter(Q(point__range=[5000, 9999]), ~Q(badges=wonderful_badge))
-        fantastic_posts = Post.objects.filter(Q(point__range=[10000, 14999]), ~Q(badges=fantastic_badge))
-        amazing_posts = Post.objects.filter(Q(point__gte=15000), ~Q(badges=amazing_badge))
+        nice_posts = Post.available.filter(Q(point__range=[100, 499]), ~Q(badges=nice_badge))
+        good_posts = Post.available.filter(Q(point__range=[500, 999]), ~Q(badges=good_badge))
+        excellent_posts = Post.available.filter(Q(point__range=[1000, 2999]), ~Q(badges=excellent_badge))
+        great_posts = Post.available.filter(Q(point__range=[3000, 4999]), ~Q(badges=great_badge))
+        wonderful_posts = Post.available.filter(Q(point__range=[5000, 9999]), ~Q(badges=wonderful_badge))
+        fantastic_posts = Post.available.filter(Q(point__range=[10000, 14999]), ~Q(badges=fantastic_badge))
+        amazing_posts = Post.available.filter(Q(point__gte=15000), ~Q(badges=amazing_badge))
 
         for post in nice_posts:
             post.badges.add(nice_badge.id)
@@ -241,7 +241,7 @@ class Post(PostCommentModelMixin,
 
         # Post Tag Post Count
         if post_tag:
-            post_tags = self.post_tags.filter(is_active=True)
+            post_tags = self.post_tags.filter(is_active=True, is_deleted=False)
             for post_tag in post_tags:
                 post_tag.tag.increase_tag_post_count()
                 post_tag.tag.save()
@@ -265,7 +265,7 @@ class Post(PostCommentModelMixin,
 
         # Post Tag Post Count
         if post_tag:
-            post_tags = self.post_tags.filter(is_active=True)
+            post_tags = self.post_tags.filter(is_active=True, is_deleted=False)
             for post_tag in post_tags:
                 post_tag.tag.decrease_tag_post_count()
                 post_tag.tag.save()

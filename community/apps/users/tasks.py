@@ -14,7 +14,7 @@ def user_task(self, user_id, username, email, phone, level, grade_title, ring_co
               profile_image_url, banner_image_url, friend_count, status, wallet_address):
     print('========== User: user_task ==========')
 
-    user = User.objects.filter(id=user_id).first()
+    user = User.available.filter(id=user_id).first()
     if not user:
         return
 
@@ -38,7 +38,7 @@ def user_task(self, user_id, username, email, phone, level, grade_title, ring_co
 def sync_user_task(self, user_id):
     print('========== User: sync_user_task ==========')
 
-    user = User.objects.filter(id=user_id).first()
+    user = User.available.filter(id=user_id).first()
     if not user:
         return
 
@@ -46,4 +46,4 @@ def sync_user_task(self, user_id):
 
     user.profiles.update(user_data=user_data)
     user.communities.update(user_data=user_data)
-    user.posts.filter(is_temporary=False, is_active=True).update(user_data=user_data)
+    user.posts.filter(is_temporary=False, is_active=True, is_deleted=False).update(user_data=user_data)

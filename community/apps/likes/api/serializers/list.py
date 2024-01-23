@@ -25,11 +25,11 @@ class PostLikeListSerializer(ModelSerializer):
         if not user.id or obj.user == user:
             return None
 
-        my_friend = user.my_friends.filter(user=obj.user, is_active=True).first()
+        my_friend = user.my_friends.filter(user=obj.user, is_active=True, is_deleted=False).first()
         if my_friend:
             return 'APPROVED'
 
-        my_friend_request = user.sender_friends.filter(receiver=obj.user, is_active=True).first()
+        my_friend_request = user.sender_friends.filter(receiver=obj.user, is_active=True, is_deleted=False).first()
         if my_friend_request and my_friend_request.status == 'PENDING':
             return 'PENDING'
 

@@ -39,7 +39,7 @@ class CommentViewSet(CommentLikeViewMixin,
         'default': CommentListSerializer,
         'partial_update': CommentUpdateSerializer,
     }
-    queryset = Comment.objects.all()
+    queryset = Comment.available.all()
     filter_backends = (DjangoFilterBackend,)
     permission_classes = (CommentPermission, )
 
@@ -76,7 +76,7 @@ class CommentViewSet(CommentLikeViewMixin,
         parent_comment = instance.parent_comment
         post = instance.post
 
-        if instance.comments.filter(is_active=True).exists():
+        if instance.comments.filter(is_active=True, is_deleted=False).exists():
             instance.is_deleted = True
             instance.save()
 
@@ -104,8 +104,7 @@ class CommentViewSet(CommentLikeViewMixin,
 
     @swagger_auto_schema(**swagger_decorator(tag='04. 댓글',
                                              id='대댓글 생성',
-                                             description='## < 대댓글 생성 API 입니다. >\n'
-                                                         '### 부모 댓글 `id` 입력',
+                                             description='부모 댓글 `id` 입력',
                                              request=ChildCommentCreateSerializer,
                                              response={201: ParentCommentListSerializer}
                                              ))
@@ -118,7 +117,7 @@ class CommentViewSet(CommentLikeViewMixin,
         if parent_comment.parent_comment:
             parent_comment = parent_comment.parent_comment
 
-        profile = parent_comment.community.profiles.filter(user=user).first()
+        profile = parent_comment.community.profiles.filter(user=user, is_active=True, is_deleted=False).first()
 
         serializer = ChildCommentCreateSerializer(data=request.data)
         if serializer.is_valid(raise_exception=True):

@@ -25,7 +25,7 @@ class CommunitySerializer(ModelSerializer):
                   'post_count')
 
     def get_badges(self, obj):
-        instance = obj.badges.filter(is_active=True).order_by('id')
+        instance = obj.badges.filter(is_active=True, is_deleted=False).order_by('id')
         return BadgeListSerializer(instance=instance, many=True).data
 
 
@@ -73,7 +73,7 @@ class CommunityDashboardSerializer(ModelSerializer):
         fields = ('title', 'post_count', 'comment_count')
 
     def get_posts(self, obj):
-        posts = Post.objects.filter(is_active=True, is_temporary=False)
+        posts = Post.available.filter(is_active=True, is_deleted=False, is_temporary=False)
         if obj.depth == 1:
             posts = posts.filter(depth1_community_id=obj.id)
 
@@ -94,5 +94,5 @@ class CommunityDashboardSerializer(ModelSerializer):
 
     def get_comment_count(self, obj):
         posts = self.get_posts(obj)
-        comments = Comment.objects.filter(is_active=True, is_deleted=False, post__in=posts)
+        comments = Comment.available.filter(is_active=True, is_deleted=False, post__in=posts)
         return len(comments)

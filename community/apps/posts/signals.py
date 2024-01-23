@@ -30,7 +30,7 @@ def post_pre_save_sync_post(sender, instance, *args, **kwargs):
             instance.profile_data = ProfileSerializer(instance.profile).data
 
     else:
-        _instance = Post.objects.filter(id=instance.id).first()
+        _instance = Post.available.filter(id=instance.id).first()
         if _instance:
             for field in [
                 # Main
@@ -63,7 +63,7 @@ def post_post_save_create_new_post_badge(sender, instance, created, **kwargs):
     print('========== Post post_save : Create New Post Badge ==========')
     if created:
         if not instance.is_temporary and not instance.is_agenda:
-            new_post_badge = Badge.objects.get(title='New', model_type='POST')
+            new_post_badge = Badge.available.get(title='New', model_type='POST')
             instance.badges.add(new_post_badge.id)
 
 
@@ -79,7 +79,7 @@ def post_post_save_set_web_url(sender, instance, created, **kwargs):
 def post_post_save_set_web_url(sender, instance, created, **kwargs):
     print('========== Post post_save: Create Profile ==========')
     if created:
-        profile = Profile.objects.filter(user=instance.user, community=instance.community).first()
+        profile = Profile.available.filter(user=instance.user, community=instance.community).first()
         if profile is None:
             profile = Profile.objects.create(user=instance.user, community=instance.community)
             instance.profile_data = ProfileSerializer(instance=profile).data

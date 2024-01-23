@@ -51,7 +51,7 @@ class CommunityBoardsAdminViewSet(mixins.ListModelMixin,
         if getattr(self, 'swagger_fake_view', False):
             return None
         # 비활성화된 객체는 보여야하기 때문에 objects
-        queryset = Board.objects.filter(community=self.kwargs["community_pk"], is_deleted=False)
+        queryset = Board.available.filter(community=self.kwargs["community_pk"], is_deleted=False)
         return queryset
 
     @swagger_auto_schema(**swagger_decorator(tag='02. 커뮤니티 - 어드민',

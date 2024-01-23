@@ -48,15 +48,15 @@ class PostFilter(django_filters.FilterSet):
             return queryset.filter(created__range=[year_ago, today])
 
     def profile_liked_filter(self, queryset, title, value):
-        profile = Profile.objects.filter(id=value).first()
+        profile = Profile.available.filter(id=value).first()
         if profile:
-            post_ids = PostLike.objects.filter(profile=profile, is_active=True).values_list('post_id', flat=True)
+            post_ids = PostLike.available.filter(profile=profile, is_active=True, is_deleted=False).values_list('post_id', flat=True)
         return queryset.filter(id__in=post_ids)
 
     def profile_commented_filter(self, queryset, title, value):
-        profile = Profile.objects.filter(id=value).first()
+        profile = Profile.available.filter(id=value).first()
         if profile:
-            post_ids = Comment.objects.filter(profile=profile, is_active=True).values_list('post_id', flat=True)
+            post_ids = Comment.available.filter(profile=profile, is_active=True, is_deleted=False).values_list('post_id', flat=True)
         return queryset.filter(id__in=post_ids)
 
     def is_temporary_filter(self, queryset, title, value):
@@ -95,7 +95,7 @@ class CommunityPostFilter(django_filters.FilterSet):
             return queryset
 
         if value:
-            bookmarked_post_ids = user.post_bookmarks.filter(is_active=True).values_list('post', flat=True)
+            bookmarked_post_ids = user.post_bookmarks.filter(is_active=True, is_deleted=False).values_list('post', flat=True)
             queryset = queryset.filter(id__in=bookmarked_post_ids)
 
         return queryset

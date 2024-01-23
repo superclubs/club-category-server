@@ -55,7 +55,7 @@ class CommunityViewSet(mixins.RetrieveModelMixin,
         user = request.user
 
         if user.id:
-            profile = instance.profiles.filter(user=user).first()
+            profile = instance.profiles.filter(user=user, is_active=True, is_deleted=False).first()
             if not profile:
                 profile = Profile.objects.create(community=instance, user=user)
 

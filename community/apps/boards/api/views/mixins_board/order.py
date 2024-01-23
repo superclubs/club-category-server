@@ -32,13 +32,13 @@ class BoardOrderViewMixin:
         board = self.get_object()
         board_order = board.order
         request_order = request.data['order']
-        request_board_group = BoardGroup.objects.get(id=request.data['board_group'])
+        request_board_group = BoardGroup.available.get(id=request.data['board_group'])
 
         if board.board_group.community.user == request.user:
 
-            board_groups = Board.objects.filter(board_group__community__id=board.board_group.community.id,
+            board_groups = Board.available.filter(board_group__community__id=board.board_group.community.id,
                                                 board_group=board.board_group)
-            request_board_groups = Board.objects.filter(board_group__community__id=board.board_group.community.id,
+            request_board_groups = Board.available.filter(board_group__community__id=board.board_group.community.id,
                                                         board_group=request_board_group)
 
             # 보드 그룹이 같을 때

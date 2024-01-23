@@ -17,7 +17,7 @@ from community.utils.fields import extract_content_summary
 # Main Section
 class PostUpdateSerializer(ModelSerializer):
     tags = serializers.ListField(child=serializers.CharField(allow_blank=False), required=False)
-    communities = serializers.ListField(child=serializers.PrimaryKeyRelatedField(queryset=Community.objects.all()),
+    communities = serializers.ListField(child=serializers.PrimaryKeyRelatedField(queryset=Community.available.all()),
                                         required=False)
 
     class Meta:

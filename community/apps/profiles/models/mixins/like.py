@@ -93,14 +93,14 @@ class ProfileLikeModelMixin(models.Model):
         self.level = math.floor(self.point ** POINT_PER_PROFILE_LEVEL) + 1
 
     def update_profile_post_like_count(self):
-        self.post_like_count = self.post_likes.filter(is_active=True).count()
+        self.post_like_count = self.post_likes.filter(is_active=True, is_deleted=False).count()
 
     def update_profile_post_dislike_count(self):
-        self.post_dislike_count = self.post_dislikes.filter(is_active=True).count()
+        self.post_dislike_count = self.post_dislikes.filter(is_active=True, is_deleted=False).count()
 
     def update_profile_comment_total_like_count(self):
-        self.total_like_count = self.comment_likes.filter(is_active=True).count()
+        self.total_like_count = self.comment_likes.filter(is_active=True, is_deleted=False).count()
 
     def update_profile_comment_dislike_count(self):
-        self.dislike_count = self.comment_dislikes.filter(is_active=True).count()
+        self.dislike_count = self.comment_dislikes.filter(is_active=True, is_deleted=False).count()
 

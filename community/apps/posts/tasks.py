@@ -12,7 +12,7 @@ def sync_post_task(self, post_id):
     from community.apps.posts.api.serializers import PostSyncSerializer
     from community.apps.posts.models import Post
 
-    post = Post.objects.filter(id=post_id).first()
+    post = Post.available.filter(id=post_id).first()
     if not post:
         return
 
@@ -28,7 +28,7 @@ def delete_post_task(self, post_id):
     from community.apps.posts.models import Post
     from community.apps.posts.api.serializers import PostDeleteSerializer
 
-    post = Post.objects.filter(id=post_id).first()
+    post = Post.available.filter(id=post_id).first()
     if post is None:
         return
     data = PostDeleteSerializer(instance=post).data

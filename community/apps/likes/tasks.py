@@ -12,7 +12,7 @@ def sync_like_task(self, instance_id):
     from community.apps.likes.models import PostLike
     from community.apps.likes.api.serializers import PostLikeSyncSerializer
 
-    instance = PostLike.objects.filter(id=instance_id).first()
+    instance = PostLike.available.filter(id=instance_id).first()
     if not instance:
         return
 
@@ -30,7 +30,7 @@ def sync_dislike_task(self, instance_id):
     from community.apps.likes.models import PostDislike
     from community.apps.likes.api.serializers import PostDislikeSyncSerializer
 
-    instance = PostDislike.objects.filter(id=instance_id).first()
+    instance = PostDislike.available.filter(id=instance_id).first()
     if not instance:
         return
 

@@ -99,9 +99,10 @@ class PostsViewSet(mixins.ListModelMixin,
     @action(methods=['delete'], detail=False, url_path='temporary', url_name='posts_temporary')
     def posts_temporary(self, request):
         user = request.user
-        posts = Post.objects.filter(user=user, is_temporary=True)
+        posts = Post.available.filter(user=user, is_temporary=True)
         if posts:
-            posts.delete()
+            for post in posts:
+                post.soft_delete()
 
         return Response(
             status=status.HTTP_204_NO_CONTENT,
@@ -129,7 +130,7 @@ class PostViewSet(mixins.CreateModelMixin,
     filter_backends = (DjangoFilterBackend,)
     permission_classes = (PostPermission,)
 
-    queryset = Post.objects.all()
+    queryset = Post.available.all()
 
     @swagger_auto_schema(**swagger_decorator(tag='03. 포스트',
                                              id='포스트 생성',
@@ -192,7 +193,7 @@ class PostViewSet(mixins.CreateModelMixin,
                                              ))
     def destroy(self, request, *args, **kwargs):
         instance = self.get_object()
-        instance.soft_delete(request=self.request)
+        instance.soft_delete()
         return Response(
             status=status.HTTP_204_NO_CONTENT,
             code=204,

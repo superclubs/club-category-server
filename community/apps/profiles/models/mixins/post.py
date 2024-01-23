@@ -35,4 +35,4 @@ class ProfilePostModelMixin(models.Model):
         self.level = math.floor(self.point ** POINT_PER_PROFILE_LEVEL) + 1
 
     def update_profile_post_count(self):
-        self.post_count = self.posts.filter(is_active=True, is_temporary=False).count()
+        self.post_count = self.posts.filter(is_active=True, is_deleted=False, is_temporary=False).count()

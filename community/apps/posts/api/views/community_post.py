@@ -77,7 +77,7 @@ class CommunityPostsAdminViewSet(mixins.ListModelMixin,
     def get_queryset(self):
         if getattr(self, 'swagger_fake_view', False):
             return None
-        queryset = Post.objects.all()
+        queryset = Post.available.all()
         queryset = queryset.filter(community=self.kwargs["community_pk"])
         queryset = PostListSerializer.prefetch_related(queryset)
         return queryset

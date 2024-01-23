@@ -102,7 +102,7 @@ class PostSyncSerializer(ModelSerializer):
         return PostTagListSerializer(instance=instance, many=True).data
 
     def get_liked_users_data(self, obj):
-        post_likes = obj.post_likes.filter(is_active=True)[:3]
+        post_likes = obj.post_likes.filter(is_active=True, is_deleted=False)[:3]
         if post_likes:
             return PostLikeSerializer(instance=post_likes, many=True).data
         else:

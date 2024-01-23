@@ -17,4 +17,4 @@ class UserPostBookmarkModelMixin(models.Model):
         self.post_bookmark_count = self.post_bookmark_count - 1
 
     def update_user_post_bookmark_count(self):
-        self.post_bookmark_count = self.post_bookmarks.filter(is_active=True).count()
+        self.post_bookmark_count = self.post_bookmarks.filter(is_active=True, is_deleted=False).count()

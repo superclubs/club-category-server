@@ -11,7 +11,7 @@ class UserFriendModelMixin(models.Model):
         abstract = True
 
     def check_friend(self, user):
-        friend = self.my_friends.filter(user=user, is_active=True).first()
+        friend = self.my_friends.filter(user=user, is_active=True, is_deleted=False).first()
         if friend:
             return True
         return False

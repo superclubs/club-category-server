@@ -18,7 +18,7 @@ class PostRankingManager(RankingManager):
     def create_rankings(self, prev_ranking_group, new_ranking_group):
 
         # 1. Get all posts
-        posts = Post.objects.filter(is_temporary=False, is_default=False, is_agenda=False)
+        posts = Post.available.filter(is_temporary=False, is_default=False, is_agenda=False)
         post_count = posts.count()
 
         # 2. Get prev_rankings
@@ -36,7 +36,7 @@ class PostRankingManager(RankingManager):
             old_point_rank = 0
 
             if prev_rankings:
-                if ranking_old := prev_rankings.filter(post=post).first():
+                if ranking_old := prev_rankings.filter(post=post, is_active=True, is_deleted=False).first():
                     old_rank = ranking_old.rank
                     old_point = ranking_old.point
                     old_point_rank = ranking_old.point_rank
@@ -73,9 +73,9 @@ class PostRankingManager(RankingManager):
             ranking.rank = index + 1
             ranking.rank_change = ranking.old_rank - ranking.rank
 
-        live_badge = Badge.objects.get(title='Live Best', model_type='POST')
-        weekly_badge = Badge.objects.get(title='Weekly Best', model_type='POST')
-        monthly_badge = Badge.objects.get(title='Monthly Best', model_type='POST')
+        live_badge = Badge.available.get(title='Live Best', model_type='POST')
+        weekly_badge = Badge.available.get(title='Weekly Best', model_type='POST')
+        monthly_badge = Badge.available.get(title='Monthly Best', model_type='POST')
 
         # 6. Update post ranking
         for index, ranking in enumerate(ranking_list):
@@ -84,18 +84,18 @@ class PostRankingManager(RankingManager):
                 ranking.post.live_rank_change = ranking.rank_change
 
                 # 7. Update post badge
-                if ranking.post.live_rank < 11 and not ranking.post.badges.filter(id=live_badge.id):
+                if ranking.post.live_rank < 11 and not ranking.post.badges.filter(id=live_badge.id, is_active=True, is_deleted=False):
                     ranking.post.badges.add(live_badge.id)
-                if ranking.post.live_rank > 10 and ranking.post.badges.filter(id=live_badge.id):
+                if ranking.post.live_rank > 10 and ranking.post.badges.filter(id=live_badge.id, is_active=True, is_deleted=False):
                     ranking.post.badges.remove(live_badge)
 
             elif new_ranking_group.ranking_type == 'WEEKLY':
                 ranking.post.weekly_rank = ranking.rank
                 ranking.post.weekly_rank_change = ranking.rank_change
 
-                if ranking.post.weekly_rank < 11 and not ranking.post.badges.filter(id=weekly_badge.id):
+                if ranking.post.weekly_rank < 11 and not ranking.post.badges.filter(id=weekly_badge.id, is_active=True, is_deleted=False):
                     ranking.post.badges.add(weekly_badge.id)
-                if ranking.post.weekly_rank > 10 and ranking.post.badges.filter(id=weekly_badge.id):
+                if ranking.post.weekly_rank > 10 and ranking.post.badges.filter(id=weekly_badge.id, is_active=True, is_deleted=False):
                     ranking.post.badges.remove(weekly_badge)
 
             elif new_ranking_group.ranking_type == 'MONTHLY':

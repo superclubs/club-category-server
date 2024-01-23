@@ -14,12 +14,13 @@ from community.bases.api.serializers import ModelSerializer
 # Models
 from community.apps.posts.models import Post
 from community.apps.communities.models import Community
+from community.apps.boards.models import Board
 
 
 # Main Section
 class PostCreateSerializer(ModelSerializer):
     tags = serializers.ListField(child=serializers.CharField(allow_blank=True), required=False)
-    communities = serializers.ListField(child=serializers.PrimaryKeyRelatedField(queryset=Community.objects.all()),
+    communities = serializers.ListField(child=serializers.PrimaryKeyRelatedField(queryset=Community.available.all()),
                                         required=True)
 
     class Meta:
@@ -49,7 +50,10 @@ class PostCreateSerializer(ModelSerializer):
         user = self.context['user']
         board = validated_data.get('board', None)
 
-        if not board:
+        if board:
+            if not Board.available.filter(id=board.id).exists():
+                raise ValidationError('보드를 찾을 수 없습니다.')
+        else:
             raise ValidationError('보드를 찾을 수 없습니다.')
 
         additional_data['community'] = main_community

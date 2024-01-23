@@ -17,4 +17,4 @@ class TagCommunityModelMixin(models.Model):
         self.community_count = self.community_count - 1
 
     def update_tag_community_count(self):
-        self.community_count = self.community_count.filter(is_active=True).count()
+        self.community_count = self.community_count.filter(is_active=True, is_deleted=False).count()

@@ -43,7 +43,7 @@ class CommentListSerializer(ModelSerializer):
         user = request.user
         if not user.id:
             return None
-        comment_like = obj.comment_likes.filter(user=user, is_active=True).first()
+        comment_like = obj.comment_likes.filter(user=user, is_active=True, is_deleted=False).first()
         if not comment_like:
             return False
         return True
@@ -55,7 +55,7 @@ class CommentListSerializer(ModelSerializer):
         user = request.user
         if not user.id:
             return None
-        comment_dislike = obj.comment_dislikes.filter(user=user, is_active=True).first()
+        comment_dislike = obj.comment_dislikes.filter(user=user, is_active=True, is_deleted=False).first()
         if not comment_dislike:
             return False
         return True
@@ -67,7 +67,7 @@ class CommentListSerializer(ModelSerializer):
         user = request.user
         if not user.id:
             return None
-        comment_report = obj.reports.filter(user=user, is_active=True).first()
+        comment_report = obj.reports.filter(user=user, is_active=True, is_deleted=False).first()
         if not comment_report:
             return False
         return True

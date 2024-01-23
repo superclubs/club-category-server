@@ -28,10 +28,10 @@ class PostVisitModelMixin(models.Model):
         self.point = self.point + POINT_PER_POST_VISIT
 
     def update_post_visit_count(self):
-        self.visit_count = self.post_visits.filter(is_active=True).count()
+        self.visit_count = self.post_visits.filter(is_active=True, is_deleted=False).count()
 
     def create_post_visit(self, user):
-        post_visit = PostVisit.objects.filter(post=self, user=user).first()
+        post_visit = PostVisit.available.filter(post=self, user=user).first()
 
         if not post_visit:
             PostVisit.objects.create(user=user, post=self)

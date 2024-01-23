@@ -13,7 +13,7 @@ def cache_image(sender, instance, *args, **kwargs):
     image = None
 
     if instance.id:
-        comment = Comment.objects.get(id=instance.id)
+        comment = Comment.available.get(id=instance.id)
         image = comment.image
 
     instance.__image = image

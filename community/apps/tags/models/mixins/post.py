@@ -17,4 +17,4 @@ class TagPostModelMixin(models.Model):
         self.post_count = self.post_count - 1
 
     def update_tag_post_count(self):
-        self.post_count = self.post_tags.filter(is_active=True, post__is_temporary=False).count()
+        self.post_count = self.post_tags.filter(is_active=True, is_deleted=False, post__is_temporary=False).count()

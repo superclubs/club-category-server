@@ -70,17 +70,17 @@ class PostListSerializer(ModelSerializer):
     def prefetch_related(self, queryset, user):
         queryset = queryset.prefetch_related(
             Prefetch('user'),
-            Prefetch('post_likes', queryset=PostLike.objects.filter(is_active=True), to_attr='active_likes'),
-            Prefetch('comments', queryset=Comment.objects.filter(is_active=True, is_deleted=False).order_by('-point')),
-            Prefetch('badges', queryset=Badge.objects.all().order_by('id')),
-            Prefetch('post_tags', queryset=PostTag.objects.all().order_by('id')),
+            Prefetch('post_likes', queryset=PostLike.available.filter(is_active=True, is_deleted=False), to_attr='active_likes'),
+            Prefetch('comments', queryset=Comment.available.filter(is_active=True, is_deleted=False).order_by('-point')),
+            Prefetch('badges', queryset=Badge.available.all().order_by('id')),
+            Prefetch('post_tags', queryset=PostTag.available.all().order_by('id')),
         )
         if user and user.id:
             queryset = queryset.prefetch_related(
-                Prefetch('post_bookmarks', queryset=PostBookmark.objects.filter(user=user, is_active=True)),
-                Prefetch('post_likes', queryset=PostLike.objects.filter(user=user, is_active=True),
+                Prefetch('post_bookmarks', queryset=PostBookmark.available.filter(user=user, is_active=True, is_deleted=False)),
+                Prefetch('post_likes', queryset=PostLike.available.filter(user=user, is_active=True, is_deleted=False),
                          to_attr='user_active_likes'),
-                Prefetch('post_dislikes', queryset=PostDislike.objects.filter(user=user, is_active=True))
+                Prefetch('post_dislikes', queryset=PostDislike.available.filter(user=user, is_active=True, is_deleted=False))
             )
         return queryset
 
@@ -105,7 +105,7 @@ class PostListSerializer(ModelSerializer):
         if user == obj.user:
             return True
 
-        other = user.my_friends.filter(user=obj.user, is_active=True).first()
+        other = user.my_friends.filter(user=obj.user, is_active=True, is_deleted=False).first()
 
         if not other:
             return False

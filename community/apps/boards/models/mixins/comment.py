@@ -19,7 +19,7 @@ class BoardCommentModelMixin(models.Model):
 
     def update_board_comment_count(self):
         # Get Active Posts
-        posts = self.posts.filter(is_active=True, is_temporary=False)
+        posts = self.posts.filter(is_active=True, is_deleted=False, is_temporary=False)
 
         total_comment_count = posts.aggregate(total=Sum('comment_count'))['total']
         if total_comment_count is None:
