@@ -10,8 +10,8 @@ class TagAdmin(CountAdmin):
     ordering = ('community_count', 'post_count')
 
     fieldsets = (
-        ("1. 정보", {"fields": ('title',)}),
-        ("2. 카운트", {"fields": ('community_count', 'post_count')})
+        ('1. 정보', {'fields': ('title',)}),
+        ('2. 카운트', {'fields': ('community_count', 'post_count')})
     )
 
     readonly_fields = ('title', 'community_count', 'post_count')

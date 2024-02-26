@@ -91,15 +91,15 @@ class PostSyncSerializer(ModelSerializer):
         return settings.SERVICE_TITLE
 
     def get_badges_data(self, obj):
-        instance = obj.badges.order_by('id')
+        instance = obj.badges.filter(is_active=True, is_deleted=False).order_by('id')
         return BadgeListSerializer(instance=instance, many=True).data
 
     def get_tags_data(self, obj):
-        instance = obj.post_tags.order_by('order')
+        instance = obj.post_tags.filter(is_active=True, is_deleted=False).order_by('order')
         return PostTagListSerializer(instance=instance, many=True).data
 
     def get_liked_users_data(self, obj):
-        post_likes = obj.post_likes.filter(is_active=True)[:3]
+        post_likes = obj.post_likes.filter(is_active=True, is_deleted=False)[:3]
         if post_likes:
             return PostLikeSerializer(instance=post_likes, many=True).data
         else:

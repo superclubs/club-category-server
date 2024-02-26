@@ -78,7 +78,7 @@ class UserViewSet(GenericViewSet):
     @action(detail=False, methods=['post'])
     def sync(self, request):
         user_id = request.data.pop('id', None)
-        user = User.objects.filter(id=user_id).first()
+        user = User.available.filter(id=user_id).first()
 
         if not user:
             raise ParseError('존재하지 않는 유저입니다.')
@@ -114,7 +114,7 @@ class UserAdminViewSet(GenericViewSet):
         user_id = request.data.get('id', None)
         password = request.data.get('password', None)
 
-        user = User.objects.filter(id=user_id).first()
+        user = User.available.filter(id=user_id).first()
         if not user:
             raise ParseError('존재하지 않는 유저입니다.')
 

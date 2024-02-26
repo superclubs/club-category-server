@@ -10,7 +10,7 @@ class CommunityVisitAdmin(CountAdmin):
     search_fields = ('community__title', 'profile__user__email')
 
     fieldsets = (
-        ("정보", {"fields": ('community', 'profile')}),
+        ('정보', {'fields': ('community', 'profile')}),
     )
 
 
@@ -20,5 +20,5 @@ class PostVisitAdmin(CountAdmin):
     search_fields = ('post__title', 'user__email')
 
     fieldsets = (
-        ("정보", {"fields": ('post', 'user')}),
+        ('정보', {'fields': ('post', 'user')}),
     )

@@ -23,7 +23,7 @@ class CommunitySerializer(ModelSerializer):
                   'post_count')
 
     def get_badges(self, obj):
-        instance = obj.badges.filter(is_active=True).order_by('id')
+        instance = obj.badges.filter(is_active=True, is_deleted=False).order_by('id')
         return BadgeListSerializer(instance=instance, many=True).data
 
 

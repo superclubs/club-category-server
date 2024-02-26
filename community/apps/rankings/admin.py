@@ -19,8 +19,8 @@ class RankingGroupAdmin(Admin):
     list_filter = ()
 
     fieldsets = (
-        ("1. 정보", {"fields": ('model_type', 'ranking_type')}),
-        ("2. 활성화 여부", {"fields": ('is_active',)}),
+        ('1. 정보', {'fields': ('model_type', 'ranking_type')}),
+        ('2. 활성화 여부', {'fields': ('is_active',)}),
     )
 
     inlines = (CommunityRankingInline, PostRankingInline)
@@ -34,9 +34,9 @@ class CommunityRankingAdmin(Admin):
     list_filter = ()
 
     fieldsets = (
-        ("1. 정보", {"fields": ('ranking_group', 'prev_ranking_group', 'community', 'rank', 'old_rank', 'point',
+        ('1. 정보', {'fields': ('ranking_group', 'prev_ranking_group', 'community', 'rank', 'old_rank', 'point',
                               'rank_change')}),
-        ("2. 활성화 여부", {"fields": ('is_active',)}),
+        ('2. 활성화 여부', {'fields': ('is_active',)}),
     )
 
 
@@ -48,7 +48,7 @@ class PostRankingAdmin(Admin):
     list_filter = ()
 
     fieldsets = (
-        ("1. 정보", {"fields": ('ranking_group', 'prev_ranking_group', 'community', 'post', 'board', 'rank', 'old_rank',
+        ('1. 정보', {'fields': ('ranking_group', 'prev_ranking_group', 'community', 'post', 'board', 'rank', 'old_rank',
                               'point', 'rank_change')}),
-        ("2. 활성화 여부", {"fields": ('is_active',)}),
+        ('2. 활성화 여부', {'fields': ('is_active',)}),
     )

@@ -8,7 +8,7 @@ from community.bases.inlines import StackedInline
 class BoardInline(StackedInline):
     model = Board
     fieldsets = (
-        ("보드", {"fields": ('title',)}),
+        ('보드', {'fields': ('title',)}),
     )
     extra = 0
 
@@ -20,12 +20,12 @@ class BoardGroupAdmin(Admin):
     list_filter = ('community',)
 
     fieldsets = (
-        ("1. 정보", {"fields": ('community', 'title')}),
-        ("2. 활성화 여부", {"fields": ('is_active',)}),
+        ('1. 정보', {'fields': ('community', 'title')}),
+        ('2. 활성화 여부', {'fields': ('is_active',)}),
     )
     add_fieldsets = (
-        ("1. 정보", {"fields": ('community', 'title')}),
-        ("2. 활성화 여부", {"fields": ('is_active',)}),
+        ('1. 정보', {'fields': ('community', 'title')}),
+        ('2. 활성화 여부', {'fields': ('is_active',)}),
     )
 
     inlines = (BoardInline,)
@@ -38,16 +38,16 @@ class BoardAdmin(Admin):
     list_filter = ('board_group',)
 
     fieldsets = (
-        ("1. 정보", {"fields": ('community', 'board_group', 'title',)}),
-        ("2. 활성화 여부", {"fields": ('is_active',)}),
-        ("3. 보드 권한",
-         {"fields": ('write_permission', 'read_permission')}),
+        ('1. 정보', {'fields': ('community', 'board_group', 'title',)}),
+        ('2. 활성화 여부', {'fields': ('is_active',)}),
+        ('3. 보드 권한',
+         {'fields': ('write_permission', 'read_permission')}),
     )
     add_fieldsets = (
-        ("1. 정보", {"fields": ('community', 'board_group', 'title',)}),
-        ("2. 활성화 여부", {"fields": ('is_active',)}),
-        ("3. 보드 권한",
-         {"fields": ('write_permission', 'read_permission')})
+        ('1. 정보', {'fields': ('community', 'board_group', 'title',)}),
+        ('2. 활성화 여부', {'fields': ('is_active',)}),
+        ('3. 보드 권한',
+         {'fields': ('write_permission', 'read_permission')})
     )
     readonly_fields = ()
 

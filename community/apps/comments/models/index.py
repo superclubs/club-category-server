@@ -101,36 +101,36 @@ class Comment(CommentLikeModelMixin,
     def create_comment_like(self):
         self.comment_likes.all().delete()
 
-        max_num = User.objects.all().count()
+        max_num = User.available.all().count()
         random_num = random.randint(1, max_num)
-        users = User.objects.filter(id__gte=random_num)
+        users = User.available.filter(id__gte=random_num)
 
         type_list = ['LIKE', 'FUN', 'HEALING', 'LEGEND', 'USEFUL', 'EMPATHY', 'DEVIL']
 
         for user in users:
 
-            comment_dislike = self.comment_dislikes.filter(user=user).first()
+            comment_dislike = self.comment_dislikes.filter(user=user, is_active=True, is_deleted=False).first()
             if comment_dislike:
                 comment_dislike.is_active = False
                 comment_dislike.save()
 
             random_type = random.choice(type_list)
-            profile = self.community.profiles.filter(user=user).first()
+            profile = self.community.profiles.filter(user=user, is_active=True, is_deleted=False).first()
             CommentLike.objects.create(user=user, comment=self, profile=profile, type=random_type)
 
     def create_comment_dislike(self):
         self.comment_dislikes.all().delete()
 
-        max_num = User.objects.all().count()
+        max_num = User.available.all().count()
         random_num = random.randint(1, max_num)
-        users = User.objects.filter(id__gte=random_num)
+        users = User.available.filter(id__gte=random_num)
 
         for user in users:
 
-            comment_like = self.comment_likes.filter(user=user).first()
+            comment_like = self.comment_likes.filter(user=user, is_active=True, is_deleted=False).first()
             if comment_like:
                 comment_like.is_active = False
                 comment_like.save()
 
-            profile = self.community.profiles.filter(user=user).first()
+            profile = self.community.profiles.filter(user=user, is_active=True, is_deleted=False).first()
             CommentDislike.objects.create(user=user, comment=self, profile=profile)

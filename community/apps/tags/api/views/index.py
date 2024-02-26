@@ -27,7 +27,7 @@ class TagsViewSet(mixins.ListModelMixin,
     serializers = {
         'default': TagListSerializer,
     }
-    queryset = Tag.objects.all()
+    queryset = Tag.available.all()
     filter_backends = (DjangoFilterBackend,)
     filterset_class = TagFilter
 

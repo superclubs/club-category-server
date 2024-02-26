@@ -19,12 +19,12 @@ class PostAdmin(Admin):
     list_filter = ('community',)
 
     fieldsets = (
-        ("1. 정보", {"fields": ('community', 'board', 'title', 'content', 'web_url')}),
-        ("2. 이미지", {"fields": ('thumbnail_media_tag', 'thumbnail_media_url')}),
-        ("3. 유저", {"fields": ('user', 'profile')}),
-        ("4. 통계", {"fields": ('point', 'like_count', 'dislike_count', 'comment_count', 'bookmark_count', 'visit_count',
+        ('1. 정보', {'fields': ('community', 'board', 'title', 'content', 'web_url')}),
+        ('2. 이미지', {'fields': ('thumbnail_media_tag', 'thumbnail_media_url')}),
+        ('3. 유저', {'fields': ('user', 'profile')}),
+        ('4. 통계', {'fields': ('point', 'like_count', 'dislike_count', 'comment_count', 'bookmark_count', 'visit_count',
                               'reported_count', 'share_count')}),
-        ("5. 활성화 유무", {"fields": ('is_active',)}),
+        ('5. 활성화 유무', {'fields': ('is_active',)}),
         ('6. 생성일', {'fields': ('created', 'achieved_20_points_at')}),
     )
 

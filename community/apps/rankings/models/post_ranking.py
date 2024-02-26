@@ -18,7 +18,7 @@ class PostRankingManager(RankingManager):
     def create_rankings(self, prev_ranking_group, new_ranking_group):
 
         # 1. Get all posts
-        posts = Post.objects.filter(is_temporary=False, is_default=False, is_agenda=False)
+        posts = Post.available.filter(is_temporary=False, is_default=False, is_agenda=False)
         post_count = posts.count()
 
         # 2. Get prev_rankings
@@ -73,9 +73,9 @@ class PostRankingManager(RankingManager):
             ranking.rank = index + 1
             ranking.rank_change = ranking.old_rank - ranking.rank
 
-        live_badge = Badge.objects.get(title='Live Best', model_type='POST')
-        weekly_badge = Badge.objects.get(title='Weekly Best', model_type='POST')
-        monthly_badge = Badge.objects.get(title='Monthly Best', model_type='POST')
+        live_badge = Badge.available.get(title='Live Best', model_type='POST')
+        weekly_badge = Badge.available.get(title='Weekly Best', model_type='POST')
+        monthly_badge = Badge.available.get(title='Monthly Best', model_type='POST')
 
         # 6. Update post ranking
         for index, ranking in enumerate(ranking_list):

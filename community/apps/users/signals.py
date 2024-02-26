@@ -29,7 +29,7 @@ def sync_user(sender, instance, **kwargs):
     if instance.id is None:  # new object will be created
         pass  # write your code here
     else:
-        _instance = User.objects.filter(id=instance.id).first()
+        _instance = User.available.filter(id=instance.id).first()
         if _instance:
             for field in ['username', 'badge_image_url', 'banner_image_url', 'profile_image_url', 'status',
                           'ring_color']:

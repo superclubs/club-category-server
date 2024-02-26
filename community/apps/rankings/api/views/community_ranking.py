@@ -37,7 +37,7 @@ class CommunityRankingsViewSet(mixins.ListModelMixin,
     def get_queryset(self):
         if getattr(self, 'swagger_fake_view', False):
             return None
-        queryset = CommunityRanking.objects.filter(community=self.kwargs["community_pk"])
+        queryset = CommunityRanking.available.filter(community=self.kwargs['community_pk'])
         return queryset
 
     @swagger_auto_schema(**swagger_decorator(tag='01. 커뮤니티',

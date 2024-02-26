@@ -25,12 +25,12 @@ class TagFilter(django_filters.FilterSet):
 
     @cached_property
     def invisible_post_tags(self):
-        return PostTag.objects.filter(Q(post__public_type='ONLY_ME') |
+        return PostTag.available.filter(Q(post__public_type='ONLY_ME') |
                                       Q(post__is_temporary=True) |
                                       Q(post__is_reserved=True, post__reserved_at__lte=now()))
 
     def community_filter(self, queryset, title, value):
-        tag_ids = PostTag.objects.filter(post__community=value).values_list('tag_id', flat=True)
+        tag_ids = PostTag.available.filter(post__community=value).values_list('tag_id', flat=True)
         return queryset.filter(id__in=tag_ids)
 
     # TODO: 예약 게시글이 보여지는 순간 tag.post_count 증가 로직 필요
@@ -51,10 +51,10 @@ class TagFilter(django_filters.FilterSet):
             if not user.id:
                 raise ParseError('anonymous user')
 
-            subscribe_posts = user.subscribe_posts.filter(is_active=True)
+            subscribe_posts = user.subscribe_posts.filter(is_active=True, is_deleted=False)
             subscribe_posts_ids = subscribe_posts.values_list('post__id', flat=True)
 
-            subscribe_post_tags = PostTag.objects.filter(post__in=subscribe_posts_ids)
+            subscribe_post_tags = PostTag.available.filter(post__in=subscribe_posts_ids)
 
             # Exclude Invisible Post Tag
             invisible_post_tags = self.invisible_post_tags
@@ -74,8 +74,8 @@ class TagFilter(django_filters.FilterSet):
             if not user.id:
                 raise ParseError('anonymous user')
 
-            bookmark_post_ids = user.post_bookmarks.filter(is_active=True).values_list('post', flat=True)
-            bookmark_post_tags = PostTag.objects.filter(post__in=bookmark_post_ids)
+            bookmark_post_ids = user.post_bookmarks.filter(is_active=True, is_deleted=False).values_list('post', flat=True)
+            bookmark_post_tags = PostTag.available.filter(post__in=bookmark_post_ids)
 
             # Exclude Invisible Post Tag
             invisible_post_tags = self.invisible_post_tags

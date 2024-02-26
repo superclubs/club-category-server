@@ -17,5 +17,5 @@ class CommentPointModelMixin(models.Model):
         self.point = self.point - 3
 
     def update_comment_point(self):
-        like_point = self.comment_likes.filter(is_active=True).count() * 3
+        like_point = self.comment_likes.filter(is_active=True, is_deleted=False).count() * 3
         self.point = like_point

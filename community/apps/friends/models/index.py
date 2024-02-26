@@ -1,4 +1,5 @@
 # Django
+from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
@@ -19,8 +20,13 @@ class FriendRequest(Model):
 
     class Meta:
         verbose_name = verbose_name_plural = _('Friend Request')
-        unique_together = ('sender', 'receiver')
         ordering = ['-created']
+
+
+def save(self, *args, **kwargs):
+    if not self.is_deleted and FriendRequest.available.filter(sender=self.sender, receiver=self.receiver).exists():
+        raise ValidationError('필드 sender, receiver 반드시 고유(unique) 해야합니다.')
+    return super(FriendRequest, self).save(*args, **kwargs)
 
 
 class Friend(Model):
@@ -37,5 +43,9 @@ class Friend(Model):
 
     class Meta:
         verbose_name = verbose_name_plural = _('Friend')
-        unique_together = ('me', 'user')
         ordering = ['-created']
+
+    def save(self, *args, **kwargs):
+        if not self.is_deleted and Friend.available.filter(me=self.me, user=self.user).exists():
+            raise ValidationError('필드 me, user 반드시 고유(unique) 해야합니다.')
+        return super(Friend, self).save(*args, **kwargs)

@@ -33,14 +33,14 @@ class BoardGroupMergeViewMixin:
     def board_group_merge(self, request, pk=None):
         board_group = self.get_object()
 
-        request_board_group = BoardGroup.objects.get(id=request.data['id'])
+        request_board_group = BoardGroup.available.get(id=request.data['id'])
         max_board = request_board_group.boards.aggregate(order=Max('order'))
         max_board_order = max_board['order']
 
         if not max_board_order:
             max_board_order = 0
         board_group.boards.update(board_group=request_board_group, order=F('order') + max_board_order)
-        board_group.delete()
+        board_group.soft_delete()
 
         return Response(
             status=status.HTTP_200_OK,

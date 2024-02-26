@@ -29,7 +29,7 @@ from community.apps.posts.api.serializers import PostCreateSerializer, PostRetri
 class CommunityPostViewMixin:
     @swagger_auto_schema(**swagger_decorator(tag='01. 커뮤니티',
                                              id='포스트 생성',
-                                             description='## < 포스트 생성 API 입니다. >',
+                                             description='',
                                              request=PostCreateSerializer,
                                              response={201: PostRetrieveSerializer}
                                              ))
@@ -39,8 +39,8 @@ class CommunityPostViewMixin:
         community = self.get_object()
         tags = request.data.pop('tags', None)
         board_id = request.data.pop('board', None)
-        board = community.boards.filter(id=board_id).first()
-        profile = user.profiles.filter(community=community, is_joined=True).first()
+        board = community.boards.filter(id=board_id, is_active=True, is_deleted=False).first()
+        profile = user.profiles.filter(community=community, is_joined=True, is_active=True, is_deleted=False).first()
         reserved_at = request.data.pop('reserved_at', None)
         boomed_period = request.data.pop('boomed_period', None)
         is_reserved = Post._meta.get_field('is_reserved').get_default()
@@ -68,7 +68,7 @@ class CommunityPostViewMixin:
 
             if tags:
                 for index, tag in enumerate(tags):
-                    if tag == "":
+                    if tag == '':
                         pass
                     else:
                         instance.create_post_tag(index=index, tag=tag)
@@ -82,13 +82,15 @@ class CommunityPostViewMixin:
 
     @swagger_auto_schema(**swagger_decorator(tag='01. 커뮤니티',
                                              id='임시글 일괄 삭제',
-                                             description='## < 임시글 일괄 삭제 API 입니다. >',
+                                             description='',
                                              response={204: 'no content'}
                                              ))
     @action(methods=['delete'], detail=True, url_path='posts/temporary', url_name='community_post_temporary')
     def community_post_temporary(self, request, pk):
-        community = Community.objects.filter(id=pk).first()
-        community.posts.filter(is_temporary=True, user=request.user).delete()
+        community = Community.available.filter(id=pk).first()
+        posts = community.posts.filter(is_temporary=True, user=request.user, is_active=True, is_deleted=False)
+        for post in posts:
+            post.soft_delete()
         return Response(
             status=status.HTTP_204_NO_CONTENT,
             code=204,

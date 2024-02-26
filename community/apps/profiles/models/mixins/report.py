@@ -20,7 +20,7 @@ class ProfileReportModelMixin(models.Model):
         self.reported_count = self.reported_count - 1
 
     def update_profile_reported_count(self):
-        comment_reports = Report.objects.filter(is_active=True, comment__profile=self).count()
-        post_reports = Report.objects.filter(is_active=True, post__profile=self).count()
+        comment_reports = Report.available.filter(is_active=True, comment__profile=self).count()
+        post_reports = Report.available.filter(is_active=True, post__profile=self).count()
 
         self.reported_count = post_reports + comment_reports

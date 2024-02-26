@@ -26,13 +26,13 @@ class CommunityVisitModelMixin(models.Model):
         self.visit_count = self.visit_count + 1
 
     def update_community_visit_count(self):
-        self.visit_count = self.community_visits.filter(is_active=True).count()
+        self.visit_count = self.community_visits.filter(is_active=True, is_deleted=False).count()
 
     def create_community_visit(self, user):
-        profile = self.profiles.filter(user=user, is_active=True).first()
+        profile = self.profiles.filter(user=user, is_active=True, is_deleted=False).first()
 
         if profile and profile.id:
-            community_visit = CommunityVisit.objects.filter(profile=profile, community=self).first()
+            community_visit = CommunityVisit.available.filter(profile=profile, community=self).first()
 
             if not community_visit:
                 CommunityVisit.objects.create(profile=profile, community=self)

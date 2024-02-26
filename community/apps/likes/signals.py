@@ -24,7 +24,7 @@ def post_like_pre_save(sender, instance, *args, **kwargs):
     # if instance.id is None:
     #     pass
     # else:
-    #     _instance = PostLike.objects.filter(id=instance.id).first()
+    #     _instance = PostLike.available.filter(id=instance.id).first()
     #     if _instance:
     #         for field in [
     #             # Main
@@ -57,7 +57,7 @@ def post_like_pre_save(sender, instance, *args, **kwargs):
 #     if instance.id is None:
 #         pass
 #     else:
-#         _instance = PostDislike.objects.filter(id=instance.id).first()
+#         _instance = PostDislike.available.filter(id=instance.id).first()
 #         if _instance:
 #             for field in [
 #                 # Boolean

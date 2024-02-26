@@ -33,4 +33,4 @@ class CommunityCommentModelMixin(models.Model):
         self.level = math.floor(self.point ** POINT_PER_COMMUNITY_LEVEL) + 1
 
     def update_community_comment_count(self):
-        self.comment_count = self.comments.filter(is_active=True).count()
+        self.comment_count = self.comments.filter(is_active=True, is_deleted=False).count()

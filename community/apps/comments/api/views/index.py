@@ -40,7 +40,7 @@ class CommentViewSet(CommentLikeViewMixin,
         'default': CommentListSerializer,
         'partial_update': CommentUpdateSerializer,
     }
-    queryset = Comment.objects.all()
+    queryset = Comment.available.all()
     filter_backends = (DjangoFilterBackend,)
     permission_classes = (IsAuthenticated,)
 
@@ -77,7 +77,7 @@ class CommentViewSet(CommentLikeViewMixin,
         parent_comment = instance.parent_comment
         post = instance.post
 
-        if instance.comments.filter(is_active=True).exists():
+        if instance.comments.filter(is_active=True, is_deleted=False).exists():
             instance.is_deleted = True
             instance.save()
 
@@ -119,7 +119,7 @@ class CommentViewSet(CommentLikeViewMixin,
         if parent_comment.parent_comment:
             parent_comment = parent_comment.parent_comment
 
-        profile = parent_comment.community.profiles.filter(user=user, is_joined=True).first()
+        profile = parent_comment.community.profiles.filter(user=user, is_joined=True, is_active=True, is_deleted=False).first()
 
         serializer = ChildCommentCreateSerializer(data=request.data)
         if serializer.is_valid(raise_exception=True):

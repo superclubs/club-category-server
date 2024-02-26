@@ -8,7 +8,7 @@ from community.bases.admin import Admin
 class ReportAdmin(Admin):
     list_display = ('post', 'comment', 'profile', 'content')
     fieldsets = (
-        ("정보", {"fields": ('post', 'comment', 'profile', 'content')}),
+        ('정보', {'fields': ('post', 'comment', 'profile', 'content')}),
     )
 
 
@@ -16,10 +16,10 @@ class ReportAdmin(Admin):
 class ReportChoiceAdmin(Admin):
     list_display = ('community', 'content')
     fieldsets = (
-        ("정보", {"fields": ('community', 'content')}),
+        ('정보', {'fields': ('community', 'content')}),
     )
     add_fieldsets = (
-        ("정보", {"fields": ('community', 'content')}),
+        ('정보', {'fields': ('community', 'content')}),
     )
 
 

@@ -28,7 +28,7 @@ class UserMainManager(UserManager):
         return self._create_user(email, password, **extra_fields)
 
     def get_or_create_user(self, email=None, password=None):
-        users = self.model.objects.filter(email=email)
+        users = self.model.available.filter(email=email)
         is_created = False
         if users.exists():
             user = users.first()

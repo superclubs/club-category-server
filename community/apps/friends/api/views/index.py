@@ -33,7 +33,7 @@ class FriendRequestViewSet(mixins.CreateModelMixin,
     serializers = {
         'default': FriendRequestCreateSerializer,
     }
-    queryset = FriendRequest.objects.all()
+    queryset = FriendRequest.available.all()
     filter_backends = (DjangoFilterBackend,)
 
     @swagger_auto_schema(**swagger_decorator(tag='06. 친구 요청',
@@ -59,7 +59,7 @@ class FriendRequestViewSet(mixins.CreateModelMixin,
     @action(detail=False, methods=['post'])
     def sync(self, request):
         friend_request_id = request.data.pop('id', None)
-        friend_request = FriendRequest.objects.filter(id=friend_request_id).first()
+        friend_request = FriendRequest.available.filter(id=friend_request_id).first()
 
         if not friend_request:
             raise ParseError('존재하지 않는 친구 요청 데이터')
@@ -81,7 +81,7 @@ class FriendViewSet(mixins.CreateModelMixin,
     serializers = {
         'default': FriendCreateSerializer,
     }
-    queryset = Friend.objects.all()
+    queryset = Friend.available.all()
     filter_backends = (DjangoFilterBackend,)
 
     @swagger_auto_schema(**swagger_decorator(tag='06. 친구',
@@ -107,7 +107,7 @@ class FriendViewSet(mixins.CreateModelMixin,
     @action(detail=False, methods=['post'])
     def sync(self, request):
         friend_id = request.data.pop('id', None)
-        friend = Friend.objects.filter(id=friend_id).first()
+        friend = Friend.available.filter(id=friend_id).first()
 
         if not friend:
             raise ParseError('존재하지 않는 친구 데이터')

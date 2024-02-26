@@ -54,7 +54,7 @@ class BoardGroup(Model):
         else:
             # 보드 그룹을 비 활성화 상태로 변경 시, 하위 보드를 모두 비 활성화 상태로 변경
             if self.__is_active and not self.is_active:
-                active_boards = self.boards.filter(is_active=True)
+                active_boards = self.boards.filter(is_active=True, is_deleted=False)
                 if active_boards:
                     active_board_list = []
                     for active_board in active_boards:

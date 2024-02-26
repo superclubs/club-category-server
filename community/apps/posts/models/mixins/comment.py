@@ -47,8 +47,8 @@ class PostCommentModelMixin(models.Model):
 
     def update_post_comments_like_count(self):
         self.comments_like_count = \
-            self.comments.filter(is_active=True).aggregate(Sum('like_count'))['like_count__sum']
+            self.comments.filter(is_active=True, is_deleted=False).aggregate(Sum('like_count'))['like_count__sum']
 
     def update_post_comments_dislike_count(self):
         self.comments_dislike_count = \
-            self.comments.filter(is_active=True).aggregate(Sum('dislike_count'))['dislike_count__sum']
+            self.comments.filter(is_active=True, is_deleted=False).aggregate(Sum('dislike_count'))['dislike_count__sum']

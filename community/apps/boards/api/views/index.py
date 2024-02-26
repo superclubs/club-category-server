@@ -41,7 +41,7 @@ class BoardGroupViewSet(mixins.RetrieveModelMixin,
     serializers = {
         'default': BoardGroupRetrieveSerializer,
     }
-    queryset = BoardGroup.objects.all()
+    queryset = BoardGroup.available.all()
     filter_backends = (DjangoFilterBackend,)
 
     @swagger_auto_schema(**swagger_decorator(tag='02. 보드 그룹',
@@ -61,7 +61,7 @@ class BoardGroupAdminViewSet(mixins.UpdateModelMixin,
     serializers = {
         'default': BoardGroupCreateSerializer,
     }
-    queryset = BoardGroup.objects.all()
+    queryset = BoardGroup.available.all()
     filter_backends = (DjangoFilterBackend,)
     permission_classes = (IsAuthenticated, )
 
@@ -94,7 +94,7 @@ class BoardsViewSet(mixins.ListModelMixin,
     serializers = {
         'default': BoardListSerializer,
     }
-    queryset = Board.objects.all()
+    queryset = Board.available.all()
     filter_backends = (DjangoFilterBackend, AdvancedSearchFilter)
     filterset_class = BoardFilter
     search_fields = ('title',)
@@ -118,7 +118,7 @@ class BoardViewSet(mixins.RetrieveModelMixin,
     serializers = {
         'default': BoardRetrieveSerializer,
     }
-    queryset = Board.objects.all()
+    queryset = Board.available.all()
     filter_backends = (DjangoFilterBackend,)
 
     @swagger_auto_schema(**swagger_decorator(tag='03. 보드',
@@ -137,7 +137,7 @@ class BoardAdminViewSet(mixins.UpdateModelMixin,
     serializers = {
         'default': BoardCreateSerializer,
     }
-    queryset = Board.objects.all()
+    queryset = Board.available.all()
     filter_backends = (DjangoFilterBackend,)
 
     @swagger_auto_schema(**swagger_decorator(tag='03. 보드 - 어드민',

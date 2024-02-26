@@ -80,7 +80,7 @@ class CommentLikeModelMixin(models.Model):
         self.dislike_count = self.dislike_count - 1
 
     def update_comment_total_like_count(self):
-        self.total_like_count = self.comment_likes.filter(is_active=True).count()
+        self.total_like_count = self.comment_likes.filter(is_active=True, is_deleted=False).count()
 
     def update_comment_like_count(self):
         self.like_count = self.comment_likes.filter(is_active=True, type='LIKE').count()
@@ -104,10 +104,10 @@ class CommentLikeModelMixin(models.Model):
         self.devil_count = self.comment_likes.filter(is_active=True, type='DEVIL').count()
 
     def update_comment_dislike_count(self):
-        self.dislike_count = self.comment_dislikes.filter(is_active=True).count()
+        self.dislike_count = self.comment_dislikes.filter(is_active=True, is_deleted=False).count()
 
     def like_comment(self, user, like_type):
-        profile = self.community.profiles.filter(user=user).first()
+        profile = self.community.profiles.filter(user=user, is_active=True, is_deleted=False).first()
 
         # 커뮤니티에 엮인 댓글에 좋아요 했을 때 프로필이 없을 경우
         if self.community and not profile:
@@ -138,7 +138,7 @@ class CommentLikeModelMixin(models.Model):
         return comment_like.comment
 
     def dislike_comment(self, user):
-        profile = self.community.profiles.filter(user=user).first()
+        profile = self.community.profiles.filter(user=user, is_active=True, is_deleted=False).first()
 
         # 커뮤니티에 엮인 포스트을 좋아요 했을 때 프로필이 없을 경우
         if self.community and not profile:

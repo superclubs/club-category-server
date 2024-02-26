@@ -31,10 +31,10 @@ class UserAdmin(Admin, UserAdmin):
         ('4. 생성일 / 수정일', {'fields': ('created', 'modified')}),
     )
 
-    readonly_fields = ('auth_token', "created", "modified", 'profile_image_tag', 'profile_image_url', 'web_url')
+    readonly_fields = ('auth_token', 'created', 'modified', 'profile_image_tag', 'profile_image_url', 'web_url')
 
     def token(self, request, obj, parent_obj=None):
         token = TokenObtainPairSerializer.get_token(obj)
         messages.add_message(request, messages.INFO, token)
 
-    token.short_description = _("Get Token")
+    token.short_description = _('Get Token')

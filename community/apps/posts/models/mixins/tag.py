@@ -18,7 +18,7 @@ class PostTagModelMixin(models.Model):
         post_tag.update(order=index, title=tag.title)
 
     def update_post_tag(self, tags):
-        PostTag.objects.filter(post=self).filter(~Q(tag__title__in=tags)).delete()
+        PostTag.available.filter(post=self).filter(~Q(tag__title__in=tags)).delete()
         for index, tag in enumerate(tags):
             tag, created = Tag.objects.get_or_create(title=tag.lower().replace(' ', ''))
             if created:

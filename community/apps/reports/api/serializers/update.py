@@ -15,8 +15,8 @@ class ReportChoiceUpdateSerializer(ModelSerializer):
         fields = ('title', 'content', 'is_active')
 
     def update(self, instance, validated_data):
-        user = self.context["request"].user
-        validated_data["user"] = user
+        user = self.context['request'].user
+        validated_data['user'] = user
         title = validated_data.get('title', None)
         content = validated_data.get('content', None)
 

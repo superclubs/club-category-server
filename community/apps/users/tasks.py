@@ -46,4 +46,4 @@ def sync_user_task(self, user_id):
 
     user.profiles.update(user_data=user_data)
     user.communities.update(user_data=user_data)
-    user.posts.filter(is_temporary=False, is_active=True).update(user_data=user_data)
+    user.posts.filter(is_temporary=False, is_active=True, is_deleted=False).update(user_data=user_data)

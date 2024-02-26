@@ -15,7 +15,7 @@ class CommentLikeAdmin(Admin):
     search_fields = ('comment__post', 'user__email')
 
     fieldsets = (
-        ("정보", {"fields": ('comment', 'user')}),
+        ('정보', {'fields': ('comment', 'user')}),
     )
 
 
@@ -25,7 +25,7 @@ class CommentDislikeAdmin(Admin):
     search_fields = ('comment__post', 'user__email')
 
     fieldsets = (
-        ("정보", {"fields": ('comment', 'user')}),
+        ('정보', {'fields': ('comment', 'user')}),
     )
 
 
@@ -35,7 +35,7 @@ class PostLikeAdmin(Admin):
     search_fields = ('post__title', 'user__email')
 
     fieldsets = (
-        ("정보", {"fields": ('post', 'user')}),
+        ('정보', {'fields': ('post', 'user')}),
     )
 
 
@@ -45,5 +45,5 @@ class PostDislikeAdmin(Admin):
     search_fields = ('post__title', 'user__email')
 
     fieldsets = (
-        ("정보", {"fields": ('post', 'user')}),
+        ('정보', {'fields': ('post', 'user')}),
     )

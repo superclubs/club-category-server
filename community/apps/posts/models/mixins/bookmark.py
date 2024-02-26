@@ -34,7 +34,7 @@ class PostBookmarkModelMixin(models.Model):
         self.point = self.point - POINT_PER_BOOKMARK
 
     def update_post_bookmark_count(self):
-        self.bookmark_count = self.post_bookmarks.filter(is_active=True).count()
+        self.bookmark_count = self.post_bookmarks.filter(is_active=True, is_deleted=False).count()
 
     def bookmark_post(self, user):
         post_bookmark, created = PostBookmark.objects.get_or_create(user=user, post=self)

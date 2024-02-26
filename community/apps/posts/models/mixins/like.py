@@ -103,7 +103,7 @@ class PostLikeModelMixin(models.Model):
         self.devil_count = self.devil_count - 1
 
     def update_post_total_like_count(self):
-        self.total_like_count = self.post_likes.filter(is_active=True).count()
+        self.total_like_count = self.post_likes.filter(is_active=True, is_deleted=False).count()
 
     def update_post_like_count(self):
         self.like_count = self.post_likes.filter(is_active=True, type='LIKE').count()
@@ -127,7 +127,7 @@ class PostLikeModelMixin(models.Model):
         self.devil_count = self.post_likes.filter(is_active=True, type='DEVIL').count()
 
     def update_post_dislike_count(self):
-        self.dislike_count = self.post_dislikes.filter(is_active=True).count()
+        self.dislike_count = self.post_dislikes.filter(is_active=True, is_deleted=False).count()
 
     def like_post(self, user, like_type):
         profile = self.community.profiles.filter(user=user).first()
@@ -189,9 +189,9 @@ class PostLikeModelMixin(models.Model):
     def create_post_like(self):
         self.post_likes.all().delete()
 
-        max_num = User.objects.all().count()
+        max_num = User.available.all().count()
         random_num = random.randint(1, max_num)
-        users = User.objects.filter(id__gte=random_num)
+        users = User.available.filter(id__gte=random_num)
 
         type_list = ['LIKE', 'FUN', 'HEALING', 'LEGEND', 'USEFUL', 'EMPATHY', 'DEVIL']
 
@@ -208,9 +208,9 @@ class PostLikeModelMixin(models.Model):
 
     def create_post_dislike(self):
         self.post_dislikes.all().delete()
-        max_num = User.objects.all().count()
+        max_num = User.available.all().count()
         random_num = random.randint(1, max_num)
-        users = User.objects.filter(id__gte=random_num)
+        users = User.available.filter(id__gte=random_num)
         for user in users:
 
             post_like = self.post_likes.filter(user=user).first()

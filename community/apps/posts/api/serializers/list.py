@@ -70,17 +70,17 @@ class PostListSerializer(ModelSerializer):
     def prefetch_related(self, queryset, user):
         queryset = queryset.prefetch_related(
             Prefetch('user'),
-            Prefetch('post_likes', queryset=PostLike.objects.filter(is_active=True), to_attr='active_likes'),
-            Prefetch('comments', queryset=Comment.objects.filter(is_active=True, is_deleted=False).order_by('-point')),
-            Prefetch('badges', queryset=Badge.objects.all().order_by('id')),
-            Prefetch('post_tags', queryset=PostTag.objects.all().order_by('id')),
+            Prefetch('post_likes', queryset=PostLike.available.all(), to_attr='active_likes'),
+            Prefetch('comments', queryset=Comment.available.all().order_by('-point')),
+            Prefetch('badges', queryset=Badge.available.all().order_by('id')),
+            Prefetch('post_tags', queryset=PostTag.available.all().order_by('id')),
         )
         if user and user.id:
             queryset = queryset.prefetch_related(
-                Prefetch('post_bookmarks', queryset=PostBookmark.objects.filter(user=user, is_active=True)),
-                Prefetch('post_likes', queryset=PostLike.objects.filter(user=user, is_active=True),
+                Prefetch('post_bookmarks', queryset=PostBookmark.available.filter(user=user)),
+                Prefetch('post_likes', queryset=PostLike.available.filter(user=user),
                          to_attr='user_active_likes'),
-                Prefetch('post_dislikes', queryset=PostDislike.objects.filter(user=user, is_active=True))
+                Prefetch('post_dislikes', queryset=PostDislike.available.filter(user=user))
             )
         return queryset
 
@@ -117,15 +117,15 @@ class PostListSerializer(ModelSerializer):
             return PostLikeSerializer(instance=post_likes, many=True, context={'request': self.context['request']}).data
 
     def get_commented_users(self, obj):
-        comment = obj.comments.first()
+        comment = obj.comments.filter(is_active=True, is_deleted=False).first()
         return CommentSerializer(instance=comment, context={'request': self.context['request']}).data
 
     def get_badges(self, obj):
-        instance = obj.badges
+        instance = obj.badges.filter(is_active=True, is_deleted=False)
         return BadgeListSerializer(instance=instance, many=True).data
 
     def get_tags(self, obj):
-        instance = obj.post_tags
+        instance = obj.post_tags.filter(is_active=True, is_deleted=False)
         return PostTagListSerializer(instance=instance, many=True).data
 
     def get_is_bookmarked(self, obj):

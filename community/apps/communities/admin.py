@@ -18,14 +18,14 @@ class CommunityAdmin(Admin):
     ordering = ()
 
     fieldsets = (
-        ("1. 정보", {"fields": ('id', 'parent_community', 'title', 'user', 'description', 'address', 'level', 'point')}),
-        ("2. 이미지", {"fields": ('banner_image', 'banner_image_url')}),
-        ("3. 전체 통계", {"fields": ('post_count', 'comment_count')}),
-        ("4. 활성화 유무", {"fields": ('is_active',)}),
+        ('1. 정보', {'fields': ('id', 'parent_community', 'title', 'user', 'description', 'address', 'level', 'point')}),
+        ('2. 이미지', {'fields': ('banner_image', 'banner_image_url')}),
+        ('3. 전체 통계', {'fields': ('post_count', 'comment_count')}),
+        ('4. 활성화 유무', {'fields': ('is_active',)}),
         ('5. 생성일 / 수정일', {'fields': ('created', 'modified')}),
     )
 
-    readonly_fields = ('id', "created", "modified", 'user_data', 'point', 'title', 'address', 'banner_image_url',
+    readonly_fields = ('id', 'created', 'modified', 'user_data', 'point', 'title', 'address', 'banner_image_url',
                        'post_count', 'comment_count')
 
     def address_reference(self, obj):

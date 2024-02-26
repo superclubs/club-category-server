@@ -26,4 +26,4 @@ class ProfileVisitModelMixin(models.Model):
         self.level = math.floor(self.point ** POINT_PER_PROFILE_LEVEL) + 1
 
     def update_community_visit_count(self):
-        self.community_visit_count = self.community_visits.filter(is_active=True).count()
+        self.community_visit_count = self.community_visits.filter(is_active=True, is_deleted=False).count()

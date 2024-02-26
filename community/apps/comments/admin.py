@@ -20,12 +20,12 @@ class CommentAdmin(Admin):
     ordering = ('-created',)
 
     fieldsets = (
-        ("1. 정보", {"fields": ('community', 'post', 'parent_comment')}),
-        ("2. 본문", {"fields": ('content',)}),
-        ("3. 유저", {"fields": ('profile_image_tag', 'user')}),
-        ("4. 통계", {"fields": ('like_count', 'dislike_count', 'reported_count')}),
-        ("5. 비밀글 및 활성화 여부", {"fields": ('is_secret', 'is_active')}),
-        ("6. 생성 및 수정 시간", {"fields": ('created', 'modified')})
+        ('1. 정보', {'fields': ('community', 'post', 'parent_comment')}),
+        ('2. 본문', {'fields': ('content',)}),
+        ('3. 유저', {'fields': ('profile_image_tag', 'user')}),
+        ('4. 통계', {'fields': ('like_count', 'dislike_count', 'reported_count')}),
+        ('5. 비밀글 및 활성화 여부', {'fields': ('is_secret', 'is_active')}),
+        ('6. 생성 및 수정 시간', {'fields': ('created', 'modified')})
     )
 
     readonly_fields = ('like_count', 'dislike_count', 'profile_image_tag', 'reported_count', 'created', 'modified')

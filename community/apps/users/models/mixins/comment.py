@@ -17,4 +17,4 @@ class UserCommentModelMixin(models.Model):
         self.comment_count = self.comment_count - 1
 
     def update_user_comment_count(self):
-        self.comment_count = self.comments.filter(is_active=True).count()
+        self.comment_count = self.comments.filter(is_active=True, is_deleted=False).count()

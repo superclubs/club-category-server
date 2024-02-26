@@ -18,7 +18,7 @@ class ClubRankingManager(RankingManager):
     def create_rankings(self, prev_ranking_group, new_ranking_group):
 
         # 1. Get all communities
-        communities = Community.objects.all()
+        communities = Community.available.all()
         community_count = communities.count()
 
         # 2. Get prev_rankings
@@ -73,10 +73,10 @@ class ClubRankingManager(RankingManager):
             ranking.rank_change = ranking.old_rank - ranking.rank
 
         # TODO: 리팩토링
-        live_badge = Badge.objects.get(title='Live Best', model_type='CLUB')
-        weekly_badge = Badge.objects.get(title='Weekly Best', model_type='CLUB')
-        monthly_badge = Badge.objects.get(title='Monthly Best', model_type='CLUB')
-        rising_badge = Badge.objects.get(title='Rising Club', model_type='CLUB')
+        live_badge = Badge.available.get(title='Live Best', model_type='CLUB')
+        weekly_badge = Badge.available.get(title='Weekly Best', model_type='CLUB')
+        monthly_badge = Badge.available.get(title='Monthly Best', model_type='CLUB')
+        rising_badge = Badge.available.get(title='Rising Club', model_type='CLUB')
 
         # 6. Update community ranking
         for index, ranking in enumerate(ranking_list):

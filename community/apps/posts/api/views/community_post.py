@@ -44,7 +44,7 @@ class CommunityPostsViewSet(mixins.ListModelMixin,
         if getattr(self, 'swagger_fake_view', False):
             return None
         queryset = Post.active.filter_readonly(user=self.request.user)
-        queryset = queryset.filter(community=self.kwargs["community_pk"])
+        queryset = queryset.filter(community=self.kwargs['community_pk'])
 
         ordering = self.request.GET.get('ordering', None)
         if ordering and ordering == 'rising_rank':
@@ -98,8 +98,8 @@ class CommunityPostsAdminViewSet(mixins.ListModelMixin,
     def get_queryset(self):
         if getattr(self, 'swagger_fake_view', False):
             return None
-        queryset = Post.objects.all()
-        queryset = queryset.filter(community=self.kwargs["community_pk"])
+        queryset = Post.available.all()
+        queryset = queryset.filter(community=self.kwargs['community_pk'])
         queryset = PostListSerializer.prefetch_related(queryset)
         return queryset
 

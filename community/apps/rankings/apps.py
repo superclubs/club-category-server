@@ -3,7 +3,7 @@ from django.utils.translation import gettext_lazy as _
 
 
 class RankingsConfig(AppConfig):
-    name = "community.apps.rankings"
+    name = 'community.apps.rankings'
     verbose_name = _('Ranking')
 
     def ready(self):

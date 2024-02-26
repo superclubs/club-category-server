@@ -44,4 +44,4 @@ class Community(CommunityPostModelMixin,
         ordering = ['-created']
 
     def __str__(self):
-        return f"{self.id} | {self.title}"
+        return f'{self.id} | {self.title}'

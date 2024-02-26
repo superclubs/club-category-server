@@ -10,7 +10,7 @@ from community.apps.post_tags.models.index import PostTag
 
 # Main Section
 class PostTagListSerializer(ModelSerializer):
-    id = serializers.PrimaryKeyRelatedField(source='tag', queryset=PostTag.objects.all())
+    id = serializers.PrimaryKeyRelatedField(source='tag', queryset=PostTag.available.all())
 
     class Meta:
         model = PostTag

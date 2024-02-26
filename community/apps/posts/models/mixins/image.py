@@ -30,15 +30,15 @@ def default_vote_post_image_path():
 def is_url_media(url):
     media_formats = (
         # Image
-        "image/png", "image/jpeg", "image/jpg",
+        'image/png', 'image/jpeg', 'image/jpg',
         # GIF
-        "image/webp", "image/gif",
+        'image/webp', 'image/gif',
         # Video
-        "video/mp4", "video/x-msvideo", "video/x-ms-wmv", "video/quicktime", "video/x-flv", "video/x-matroska",
+        'video/mp4', 'video/x-msvideo', 'video/x-ms-wmv', 'video/quicktime', 'video/x-flv', 'video/x-matroska',
     )
     r = requests.head(url)
 
-    if r.headers["content-type"] in media_formats:
+    if r.headers['content-type'] in media_formats:
         return True
     return False
 

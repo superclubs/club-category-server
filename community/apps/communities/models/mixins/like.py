@@ -102,8 +102,8 @@ class CommunityLikeModelMixin(models.Model):
     # post 별로 comment like 갯수도 가지고 있어야 한다.
     def update_comments_like_count(self):
         self.comments_like_count = \
-            self.posts.filter(is_active=True).aggregate(Sum('comments_like_count'))['comments_like_count__sum']
+            self.posts.filter(is_active=True, is_deleted=False).aggregate(Sum('comments_like_count'))['comments_like_count__sum']
 
     def update_comments_dislike_count(self):
         self.comments_dislike_count = \
-            self.posts.filter(is_active=True).aggregate(Sum('comments_dislike_count'))['comments_dislike_count__sum']
+            self.posts.filter(is_active=True, is_deleted=False).aggregate(Sum('comments_dislike_count'))['comments_dislike_count__sum']

@@ -33,7 +33,7 @@ class CommunityReportChoiceAdminViewSet(mixins.UpdateModelMixin,
         'default': ReportChoiceListSerializer,
         'partial_update': ReportChoiceUpdateSerializer,
     }
-    queryset = ReportChoice.objects.all()
+    queryset = ReportChoice.available.all()
     filter_backends = (DjangoFilterBackend,)
     permission_classes = (IsAuthenticated,)
 
@@ -73,7 +73,7 @@ class CommunityReportChoicesViewSet(mixins.ListModelMixin,
     def get_queryset(self):
         if getattr(self, 'swagger_fake_view', False):
             return None
-        queryset = ReportChoice.objects.filter(community=self.kwargs["community_pk"])
+        queryset = ReportChoice.available.filter(community=self.kwargs['community_pk'])
         return queryset
 
     @swagger_auto_schema(**swagger_decorator(tag='01. 커뮤니티',

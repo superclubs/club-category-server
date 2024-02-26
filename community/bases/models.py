@@ -1,14 +1,20 @@
+# Python
 import uuid as uuid
+
+# Django
 from django.db import models
 from django.db.models import F, Value, CharField, Manager as _Manager, QuerySet as _QuerySet
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
+from django.utils.timezone import now
 
+# Third Party
 import timeago
 from annoying.fields import AutoOneToOneField as _AutoOneToOneField
 from model_utils.models import TimeStampedModel
 
 
+# Main Section
 class AutoOneToOneField(_AutoOneToOneField):
     pass
 
@@ -44,6 +50,8 @@ class Model(UpdateMixin, TimeStampedModel, models.Model):
     deleted = models.DateTimeField("Deleted", blank=True, null=True)
     uuid = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
 
+    __is_deleted = None
+
     class Meta:
         abstract = True
 
@@ -58,3 +66,14 @@ class Model(UpdateMixin, TimeStampedModel, models.Model):
         super(Model, self).__init__(*args, **kwargs)
         self._meta.get_field("created").verbose_name = _("Created")
         self._meta.get_field("modified").verbose_name = _("Modified")
+        self.__is_deleted = self.is_deleted
+
+    def save(self, *args, **kwargs):
+        if self.__is_deleted != self.is_deleted:
+            self.deleted = None if not self.is_deleted else now()
+        super(Model, self).save(*args, **kwargs)
+
+    def soft_delete(self, *args, **kwargs):
+        self.is_active = False
+        self.is_deleted = True
+        self.save()

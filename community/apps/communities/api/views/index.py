@@ -83,7 +83,7 @@ class CommunitiesViewSet(mixins.ListModelMixin,
         if getattr(self, 'swagger_fake_view', False):
             return None
 
-        queryset = Community.objects.filter(is_active=True).select_related('category')
+        queryset = Community.available.filter(is_active=True, is_deleted=False).select_related('category')
         user = self.request.user
 
         if user.id:
