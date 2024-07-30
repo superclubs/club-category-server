@@ -56,6 +56,7 @@ class User(
     religion = models.CharField(_("Religion"), max_length=40, null=True, blank=True)
     birth = models.DateField(_("Birth"), null=True, blank=True)
     nation = models.CharField(_("Nation"), max_length=255, null=True, blank=True)
+    religion = models.CharField(_("Religion"), max_length=40, null=True, blank=True)
     sdk_id = models.IntegerField(_("Sdk Id"), null=True)
     sdk_uuid = models.UUIDField(_("Sdk UUID"), null=True, blank=True)
 
