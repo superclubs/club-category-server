@@ -53,6 +53,7 @@ class User(
     hash = models.CharField(_("Hash"), max_length=10, null=True, blank=True)
     wallet_address = models.CharField(_("Wallet Address"), max_length=255, null=True, blank=True)
     gender = models.CharField(_("Gender"), max_length=20, null=True, blank=True)
+    religion = models.CharField(_("Religion"), max_length=40, null=True, blank=True)
     birth = models.DateField(_("Birth"), null=True, blank=True)
     nation = models.CharField(_("Nation"), max_length=255, null=True, blank=True)
     sdk_id = models.IntegerField(_("Sdk Id"), null=True)

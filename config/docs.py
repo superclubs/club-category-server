@@ -1,7 +1,7 @@
 # Django
 from django.conf import settings
 from django.urls import include, path
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 # Third party
 from drf_yasg import openapi

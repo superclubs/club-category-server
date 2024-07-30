@@ -12,7 +12,7 @@ from django.db.models import QuerySet as _QuerySet
 from django.db.models import Value
 from django.utils import timezone
 from django.utils.timezone import now
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from model_utils.models import TimeStampedModel
 
 
