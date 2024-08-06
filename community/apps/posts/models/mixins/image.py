@@ -71,7 +71,12 @@ def upload_image_to_s3(image_data, s3_key):
         aws_secret_access_key=AWS_SECRET_ACCESS_KEY,
         region_name="ap-northeast-2",
     )
-    s3_client.put_object(Bucket=AWS_STORAGE_BUCKET_NAME, Key=s3_key, Body=image_data, ContentType="image/jpeg")
+    s3_client.put_object(
+        Bucket=AWS_STORAGE_BUCKET_NAME,
+        Key=s3_key,
+        Body=image_data,
+        ContentType="image/jpeg",
+    )
 
 
 def extract_data_from_video(video_url):
