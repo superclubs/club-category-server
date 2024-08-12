@@ -2,7 +2,7 @@ name: develop CI
 
 on:
   push:
-    branches: [ develop ]
+    branches: [develop]
 
 jobs:
   build:
@@ -10,7 +10,7 @@ jobs:
 
     steps:
       - name: Checkout source code
-        uses: actions/checkout@v1
+        uses: actions/checkout@v4
 
       - name: Generate deployment package
         run: zip -r deploy.zip . -x '*.git*'
@@ -31,4 +31,3 @@ jobs:
           region: ap-northeast-2
           deployment_package: deploy.zip
           use_existing_version_if_available: true
-
