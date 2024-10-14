@@ -9,6 +9,8 @@ from community.bases.api.serializers import ModelSerializer
 # Main Section
 class AdminUserSyncSerializer(ModelSerializer):
     id = serializers.IntegerField()
+    password = serializers.CharField(required=False)
+    username = serializers.CharField(required=False)
 
     class Meta:
         model = User
