@@ -509,7 +509,7 @@ if SENTRY_DSN := env("SENTRY_DSN", default=None):
     sentry_sdk.init(
         dsn=SENTRY_DSN,
         integrations=integrations,
-        traces_sample_rate=env.float("SENTRY_TRACES_SAMPLE_RATE", default=1.0),
+        traces_sample_rate=env.float("SENTRY_TRACES_SAMPLE_RATE", default=0.01),
     )
 
 # 33. Creta
