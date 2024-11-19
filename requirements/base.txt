@@ -12,7 +12,7 @@ psutil==5.9.2
 bcrypt==4.0.0
 dacite==1.6.0
 # awsebcli==3.20.3
-mysqlclient==2.1.1
+# mysqlclient==2.1.1
 beautifulsoup4==4.11.1
 celery==5.2.7
 opencv-python-headless==4.8.0.74
@@ -85,7 +85,6 @@ celery[sqs]
 django-celery-results
 django-celery-beat
 
-
-# Creta
+# Kafka
 # ------------------------------------------------------------------------------
-django_creta_auth==0.1.5
+aiokafka==0.11.0

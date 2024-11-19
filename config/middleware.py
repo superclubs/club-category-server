@@ -4,9 +4,7 @@ from urllib.parse import urljoin
 import requests
 from django.conf import settings
 from django.contrib.auth import get_user_model, login
-from django.utils import timezone
 from django.utils.deprecation import MiddlewareMixin
-from django_creta_auth.gateway import validate_session
 from rest_framework.exceptions import AuthenticationFailed
 
 User = get_user_model()
@@ -26,44 +24,13 @@ class AutoLoginMiddleware(MiddlewareMixin):
 
     def authenticate_with_token(self, token):
         try:
-            user = User.objects.get(token_creta=token, token_creta_expired_at__gte=timezone.now())
+            user = User.objects.get(token_creta=token)
             user.backend = 'django.contrib.auth.backends.ModelBackend'  # 명시적으로 backend 설정
             return user
         except User.DoesNotExist:
-            session_data, status_code = validate_session(token)
-            if status_code != 200 or not session_data.get("isValid", False):
-                raise AuthenticationFailed(session_data.get("error", "Invalid session"))
-            return self.get_user_from_session(session_data, token)
-
-    def get_user_from_session(self, session_data, token):
-        user_info = session_data.get("sessionUser")
-        expired_at = session_data.get("expiresAt")
-        if not user_info:
-            raise AuthenticationFailed("Invalid session data")
-
-        user_id_creta = user_info.get("id")
-        email = user_info.get("email")
-        is_two_factor = user_info.get("isTwoFactor")
-
-        try:
-            user = User.objects.get(id_creta=user_id_creta)
-            user.token_creta = token
-            user.token_creta_expired_at = expired_at
-            user.is_two_factor = is_two_factor
-            user.backend = 'django.contrib.auth.backends.ModelBackend'  # 명시적으로 backend 설정
-            user.save()
-
-            if not user.is_active:
-                raise AuthenticationFailed("User is inactive")
-
-            return user
-        except User.DoesNotExist:
-            # Fetch user details from Superclub server if user does not exist locally
             user = self.fetch_user_from_superclub(token)
             if user:
                 user.token_creta = token
-                user.token_creta_expired_at = expired_at
-                user.is_two_factor = is_two_factor
                 user.backend = 'django.contrib.auth.backends.ModelBackend'
                 user.save()
                 return user
@@ -84,13 +51,19 @@ class AutoLoginMiddleware(MiddlewareMixin):
         if not user_data:
             raise AuthenticationFailed("Invalid user data from Superclub server")
 
-        # Filter user_data to include only fields that exist in the User model
-        user_fields = {field.name for field in User._meta.get_fields()}
-        filtered_user_data = {k: v for k, v in user_data.items() if k in user_fields}
+        # User ID 확인
+        id = user_data.get("id")
+        id_creta = user_data.get("id_creta")
+        if not (id and id_creta):
+            raise AuthenticationFailed("User ID is missing from Superclub data")
 
-        # Create the user locally
-        user = User.objects.create(**filtered_user_data)
-        return user
+        try:
+            # 로컬 데이터베이스에서 유저 검색
+            user = User.objects.get(id_creta=id_creta)
+            return user
+        except User.DoesNotExist:
+            # 로컬에 유저가 없는 경우 에러 반환
+            raise AuthenticationFailed("User exists on Superclub but not locally.")
 
     def login_with_backend(self, request, user):
         user.backend = 'django.contrib.auth.backends.ModelBackend'  # 명시적으로 backend 설정

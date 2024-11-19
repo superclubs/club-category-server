@@ -4,11 +4,9 @@ from django.contrib.auth.admin import UserAdmin
 # Local
 from django.utils.html import format_html
 
-from community.apps.users.models import User
 from community.bases.admin import Admin
 
 
-@admin.register(User)
 class UserAdmin(Admin, UserAdmin):
     list_display = ("profile_image_tag", "username", "email", "is_staff", "web_url")
     search_fields = ("email", "username")

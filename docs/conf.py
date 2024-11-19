@@ -28,9 +28,8 @@ django.setup()
 # -- Project information -----------------------------------------------------
 
 project = "community"
-copyright = """2022, Leo Yunhyung Lee"""
-author = "Leo Yunhyung Lee"
-
+copyright = """2022, Runners Inc"""
+author = "Runners Inc"
 
 # -- General configuration ---------------------------------------------------
 
