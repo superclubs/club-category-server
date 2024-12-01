@@ -64,24 +64,30 @@ class Authentication(BaseAuthentication):
             filtered_user_data["badge"] = Badge.objects.filter(title_en=badge_data['title'],
                                                                model_type="COMMON").first()
 
-        # ID로 사용자가 이미 존재하는지 확인하고 업데이트 또는 생성
         id_user = filtered_user_data.get("id")
         id_creta = filtered_user_data.get("id_creta")
 
+        # 1. 기존 사용자 확인
         user = self.user_model.objects.filter(id=id_user).first()
-        users_removed = self.user_model.objects.filter(id_creta=id_creta).exclude(id=id_user)
-        if users_removed.exists():
-            users_removed.update(id_creta=None)
 
+        # 2. `id_creta`가 중복된 사용자 처리
+        if id_creta:
+            self.user_model.objects.filter(id_creta=id_creta).exclude(id=id_user).update(id_creta=None)
+
+        # 3. 사용자 생성 또는 업데이트
         if user:
+            # 기존 사용자 업데이트
             for key, value in filtered_user_data.items():
                 setattr(user, key, value)
-            user.save()
         else:
+            # 새 사용자 생성
             user = self.user_model.objects.create(**filtered_user_data)
 
+        # 4. 토큰 갱신
         if token:
             user.token_creta = token
-            user.save()
+
+        # 5. 저장
+        user.save()
 
         return user
