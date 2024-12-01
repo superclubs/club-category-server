@@ -517,6 +517,7 @@ if SENTRY_DSN := env("SENTRY_DSN", default=None):
     sentry_sdk.init(
         dsn=SENTRY_DSN,
         integrations=integrations,
+        send_default_pii=True,
         traces_sample_rate=env.float("SENTRY_TRACES_SAMPLE_RATE", default=0.01),
     )
 

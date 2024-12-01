@@ -10,23 +10,15 @@ from rest_framework.exceptions import AuthenticationFailed
 from community.apps.badges.models import Badge
 
 
-# Main Section
 class Authentication(BaseAuthentication):
     def __init__(self):
         self.user_model = get_user_model()
 
     def authenticate(self, request):
         auth_header = request.headers.get('Authorization')
-        partner_key = request.headers.get('Partner-Key')
-        partner_secret_key = request.headers.get('Partner-Secret-Key')
-        email = request.headers.get('CretaEmail')
-        id_creta = request.headers.get('CretaID')
 
         if auth_header:
             return self.authenticate_with_token(auth_header)
-
-        elif partner_key and partner_secret_key and email and id_creta:
-            return self.authenticate_with_email_id_creta(email, id_creta, partner_key, partner_secret_key)
 
         return None
 
@@ -47,42 +39,13 @@ class Authentication(BaseAuthentication):
         user = self.get_or_create_user(user_data, token)
         return (user, token)
 
-    def authenticate_with_email_id_creta(self, email, id_creta, partner_key, partner_secret_key):
-        # 주어진 email과 id_creta로 사용자가 존재하는지 확인
-        user = self.user_model.objects.filter(email=email, id_creta=id_creta).first()
-        if user:
-            return (user, None)
-
-        # Superclub 서버에서 사용자 세부 정보를 가져옴
-        user_data = self.fetch_user_data_from_superclub(None, partner_key, partner_secret_key, email, id_creta)
-        if not user_data:
-            raise AuthenticationFailed(_("Invalid user data from Superclub server"))
-
-        # 사용자 정보를 생성
-        user = self.get_or_create_user(user_data)
-        return (user, None)
-
-    def fetch_user_data_from_superclub(
-        self,
-        token=None,
-        partner_key=None,
-        partner_secret_key=None,
-        email=None,
-        id_creta=None
-    ):
+    def fetch_user_data_from_superclub(self, token):
         url = urljoin(settings.SUPERCLUB_SERVER_HOST, f"/api/{settings.SUPERCLUB_API_VERSION}/user/me")
 
         headers = {
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
+            "Authorization": "Bearer " + str(token)
         }
-        if token:
-            headers["Authorization"] = "Bearer " + str(token)
-        if partner_key and partner_secret_key:
-            headers["Partner-Key"] = partner_key
-            headers["Partner-Secret-Key"] = partner_secret_key
-        if email and id_creta:
-            headers["CretaEmail"] = email
-            headers["CretaID"] = id_creta
 
         response = requests.get(url, headers=headers)
         if response.status_code != 200:
@@ -101,29 +64,30 @@ class Authentication(BaseAuthentication):
             filtered_user_data["badge"] = Badge.objects.filter(title_en=badge_data['title'],
                                                                model_type="COMMON").first()
 
-        # ID로 사용자가 이미 존재하는지 확인하고 업데이트 또는 생성
         id_user = filtered_user_data.get("id")
         id_creta = filtered_user_data.get("id_creta")
 
+        # 1. 기존 사용자 확인
         user = self.user_model.objects.filter(id=id_user).first()
-        users_removed = self.user_model.objects.filter(id_creta=id_creta).exclude(id=id_user)
-        if users_removed.exists():
-            users_removed.update(id_creta=None)
 
+        # 2. `id_creta`가 중복된 사용자 처리
+        if id_creta:
+            self.user_model.objects.filter(id_creta=id_creta).exclude(id=id_user).update(id_creta=None)
+
+        # 3. 사용자 생성 또는 업데이트
         if user:
+            # 기존 사용자 업데이트
             for key, value in filtered_user_data.items():
-                try:
-                    setattr(user, key, value)
-                except Exception as e:
-                    print(key)
-                    print(value)
-
-            user.save()
+                setattr(user, key, value)
         else:
+            # 새 사용자 생성
             user = self.user_model.objects.create(**filtered_user_data)
 
+        # 4. 토큰 갱신
         if token:
             user.token_creta = token
-            user.save()
+
+        # 5. 저장
+        user.save()
 
         return user
