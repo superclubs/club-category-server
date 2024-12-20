@@ -2,6 +2,7 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
+from community.apps.likes.constants.index import emoji_dict
 # Models
 from community.bases.models import Model
 
@@ -154,7 +155,19 @@ class CommentLike(Model):
         community = comment.community
         profile = self.profile
 
-        if self.id is None:
+        create_emoji = (
+            True
+            if (
+                self._state.adding
+                or self.__type != self.type
+                or (self.__is_active != self.is_active and self.is_active)
+            )
+            else False
+        )
+
+        delete_emoji = True if (self.__is_active != self.is_active and not self.is_active) else False
+
+        if self._state.adding:
             # Comment CommentLike Count, Point
             comment.increase_comment_total_like_count()
             comment.increase_comment_point()
@@ -216,7 +229,26 @@ class CommentLike(Model):
 
                 comment.save()
 
-        return super(CommentLike, self).save(*args, **kwargs)
+        super(CommentLike, self).save(*args, **kwargs)
+
+        emoji_code = emoji_dict.get(self.type)
+
+        if not emoji_code:
+            return
+
+        if create_emoji:
+            # 좋아요 시 emoji 생성
+            try:
+                comment.emoji_comment(self.user, emoji_code)
+            except Exception as e:
+                print(f"Commentlike 생성 {e}")
+
+        elif delete_emoji:
+            # 좋아요 취소 시 emoji 삭제
+            try:
+                comment.unemoji_comment(self.user, emoji_code)
+            except Exception as e:
+                print(f"Commentlike 삭제 {e}")
 
 
 class CommentDislike(Model):

@@ -15,7 +15,6 @@ def delete_selected_softly(modeladmin, request, queryset):
         post.soft_delete()
 
 
-@admin.register(Post)
 class PostAdmin(Admin):
     list_display = (
         "thumbnail_media_tag",

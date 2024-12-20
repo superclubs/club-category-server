@@ -168,6 +168,7 @@ LOCAL_APPS = [
     "community.apps.community_posts.apps.CommunityPostsConfig",
     "community.apps.community_users.apps.CommunityUsersConfig",
     "community.apps.comments.apps.CommentsConfig",
+    "community.apps.emojis.apps.EmojisConfig",
     "community.apps.friends.apps.FriendsConfig",
     "community.apps.likes.apps.LikesConfig",
     "community.apps.post_tags.apps.PostTagsConfig",
@@ -521,7 +522,8 @@ if SENTRY_DSN := env("SENTRY_DSN", default=None):
         traces_sample_rate=env.float("SENTRY_TRACES_SAMPLE_RATE", default=0.01),
     )
 
-# KAFKA
+
+# 34. KAFKA
 # ------------------------------------------------------------------------------
 KAFKA_BROKER_URLS = env.list("KAFKA_BROKER_URLS")
 KAFKA_GROUP_ID = env("KAFKA_GROUP_ID")

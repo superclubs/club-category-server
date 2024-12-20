@@ -113,3 +113,11 @@ ICON_TYPE = Choices(
     ("LABEL", _("LABEL")),
     ("USER_INFO", _("USER_INFO")),
 )
+
+FRIEND_REQUEST_AVAILABLE_STATUS = Choices(
+    ("SEND", _("SEND")),
+    ("RECEIVED", _("RECEIVED")),
+    ("APPROVED", _("APPROVED")),
+    ("UNAVAILABLE", _("UNAVAILABLE")),
+    ("BANNED", _("BANNED")),
+)

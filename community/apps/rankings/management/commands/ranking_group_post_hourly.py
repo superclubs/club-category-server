@@ -10,4 +10,5 @@ class Command(BaseCommand):
     help = "Create Ranking Group Post Hourly"
 
     def handle(self, *args, **kwargs):
-        RankingGroup.objects.create(model_type="POST", ranking_type="LIVE")
+        # RankingGroup.objects.create(model_type="POST", ranking_type="LIVE")
+        pass

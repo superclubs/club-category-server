@@ -1,4 +1,5 @@
 from django.db.models import Prefetch
+from drf_yasg.utils import swagger_serializer_method
 from rest_framework import serializers
 
 from community.apps.badges.api.serializers import BadgeListSerializer
@@ -6,6 +7,8 @@ from community.apps.badges.models import Badge
 from community.apps.bookmarks.models import PostBookmark
 from community.apps.comments.api.serializers import CommentSerializer
 from community.apps.comments.models import Comment
+from community.apps.emojis.api.serializers import PostEmojiSerializer
+from community.apps.emojis.models import PostEmoji
 from community.apps.friends.models import Friend
 from community.apps.likes.api.serializers import PostLikeSerializer
 from community.apps.likes.models import PostDislike, PostLike
@@ -34,6 +37,7 @@ class PostListSerializer(ModelSerializer):
     liked_users = serializers.SerializerMethodField()
     commented_users = serializers.SerializerMethodField()
     user_like_type = serializers.SerializerMethodField()
+    emojis = serializers.SerializerMethodField()
 
     class Meta:
         model = Post
@@ -74,6 +78,7 @@ class PostListSerializer(ModelSerializer):
             "comment_count",
             "visit_count",
             "share_count",
+            "emoji_count",
             "total_like_count",
             "dislike_count",
             "like_count",
@@ -104,6 +109,7 @@ class PostListSerializer(ModelSerializer):
             "is_kept",
             "commented_users",
             "user_like_type",
+            "emojis",
         )
 
     def prefetch_related(self, queryset, user):
@@ -123,6 +129,7 @@ class PostListSerializer(ModelSerializer):
                          ),
                 Prefetch("badges", queryset=Badge.available.all().order_by("id")),
                 Prefetch("post_tags", queryset=PostTag.available.all().order_by("id")),
+                PostEmoji.objects.get_post_emojis_prefetch(user)
             )
         )
         if user.is_authenticated:
@@ -230,3 +237,26 @@ class PostListSerializer(ModelSerializer):
                 return None
             return post_like[0].type
         return None
+
+    @swagger_serializer_method(PostEmojiSerializer(many=True))
+    def get_emojis(self, obj):
+        if not hasattr(obj, "prefetched_post_emojis"):
+            return []
+
+        emojis = obj.prefetched_post_emojis
+
+        grouped_emojis = {}
+        for emoji in emojis:
+            emoji_code = emoji.emoji_code
+            if emoji_code not in grouped_emojis:
+                grouped_emojis[emoji_code] = {
+                    "emoji_code": emoji_code,
+                    "is_selected": emoji.is_selected,
+                    "count": emoji.count,
+                    "users": [],
+                }
+
+            if len(grouped_emojis[emoji_code]["users"]) < 5:
+                grouped_emojis[emoji_code]["users"].append(emoji.user)
+
+        return PostEmojiSerializer(grouped_emojis.values(), many=True).data

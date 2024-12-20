@@ -18,6 +18,7 @@ from community.apps.comments.api.serializers import (
 from community.apps.comments.api.views.mixins import (
     CommentLikeViewMixin,
     CommentReportViewMixin,
+    CommentEmojiViewMixin,
 )
 
 # Permissions
@@ -38,7 +39,12 @@ from community.utils.point import POINT_PER_PARENT_COMMENT
 
 # Main Section
 class CommentViewSet(
-    CommentLikeViewMixin, CommentReportViewMixin, mixins.UpdateModelMixin, mixins.DestroyModelMixin, GenericViewSet
+    CommentLikeViewMixin,
+    CommentReportViewMixin,
+    CommentEmojiViewMixin,
+    mixins.UpdateModelMixin,
+    mixins.DestroyModelMixin,
+    GenericViewSet
 ):
     serializers = {
         "default": CommentListSerializer,

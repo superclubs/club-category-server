@@ -15,6 +15,7 @@ from community.apps.comments.models.mixins import (
     CommentLikeModelMixin,
     CommentPointModelMixin,
     CommentReportModelMixin,
+    CommentEmojiModelMixin,
 )
 
 # Models
@@ -32,7 +33,12 @@ from community.utils.point import POINT_PER_PARENT_COMMENT
 
 
 # Main Section
-class Comment(CommentLikeModelMixin, CommentImageModelMixin, CommentReportModelMixin, CommentPointModelMixin, Model):
+class Comment(CommentLikeModelMixin,
+              CommentImageModelMixin,
+              CommentReportModelMixin,
+              CommentPointModelMixin,
+              CommentEmojiModelMixin,
+              Model):
     parent_comment = models.ForeignKey(
         "self",
         verbose_name=_("Parent Comment"),

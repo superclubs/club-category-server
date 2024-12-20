@@ -21,6 +21,8 @@ from community.apps.communities.api.views import (
     CommunityAdminViewSet,
     CommunityViewSet,
 )
+from community.apps.emojis.api.views import PostEmojisViewSet, PostEmojiUsersViewSet, CommentEmojisViewSet, \
+    CommentEmojiUsersViewSet
 
 # Like
 from community.apps.likes.api.views import CommentLikesViewSet, PostLikesViewSet
@@ -54,6 +56,10 @@ router.register(r"posts", PostsViewSet, basename="posts")
 
 # Comment Section
 router.register("comment", CommentViewSet)
+comment_emojis_router = routers.NestedSimpleRouter(router, r"comment", lookup="comment")
+comment_emojis_router.register(r"emojis", CommentEmojisViewSet, basename="comment-emojis")
+comment_emoji_users_router = routers.NestedSimpleRouter(router, r"comment", lookup="comment")
+comment_emoji_users_router.register(r"emoji/users", CommentEmojiUsersViewSet, basename="comment-emoji-users")
 
 # Board Admin Section
 router.register("admin/board", BoardAdminViewSet)
@@ -82,6 +88,10 @@ post_comments_router = routers.NestedSimpleRouter(router, r"post", lookup="post"
 post_comments_router.register(r"comments", CommentsViewSet, basename="post-comments")
 post_likes_router = routers.NestedSimpleRouter(router, r"post", lookup="post")
 post_likes_router.register(r"likes", PostLikesViewSet, basename="post-likes")
+post_emojis_router = routers.NestedSimpleRouter(router, r"post", lookup="post")
+post_emojis_router.register(r"emojis", PostEmojisViewSet, basename="post-emojis")
+post_emoji_users_router = routers.NestedSimpleRouter(router, r"post", lookup="post")
+post_emoji_users_router.register(r"emoji/users", PostEmojiUsersViewSet, basename="post-emoji-users")
 
 # Comment Nested Router
 router.register(r"comment", CommentViewSet, basename="comment")
@@ -96,6 +106,10 @@ urlpatterns = [
     path("", include(community_posts_router.urls)),
     path("", include(board_posts_router.urls)),
     path("", include(post_comments_router.urls)),
+    path("", include(post_emojis_router.urls)),
+    path("", include(post_emoji_users_router.urls)),
     path("", include(post_likes_router.urls)),
     path("", include(comment_likes_router.urls)),
+    path("", include(comment_emojis_router.urls)),
+    path("", include(comment_emoji_users_router.urls)),
 ] + router.urls

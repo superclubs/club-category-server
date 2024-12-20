@@ -19,6 +19,7 @@ from community.apps.posts.models.mixins import (
     PostBookmarkModelMixin,
     PostCommentModelMixin,
     PostCommunityModelMixin,
+    PostEmojiModelMixin,
     PostLikeModelMixin,
     PostMediaModelMixin,
     PostPointModelMixin,
@@ -117,6 +118,7 @@ class Post(
     PostMediaModelMixin,
     PostPointModelMixin,
     PostCommunityModelMixin,
+    PostEmojiModelMixin,
     Model,
 ):
 
