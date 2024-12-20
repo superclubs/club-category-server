@@ -1,13 +1,8 @@
-# Django
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
-# Models
 from community.bases.models import Model
-from community.modules.gateways.common import gateway as gateway_superclub
-
-# Modules
-from community.modules.gateways.post import gateway as gateway_post
+from community.modules.producers.bookmark import BookmarkProducer
 
 
 # Main Section
@@ -29,7 +24,8 @@ class PostBookmark(Model):
         self.__is_active = self.is_active
 
     def save(self, *args, **kwargs):
-        if self.id is None:
+        is_created = self._state.adding
+        if is_created:
             # User PostBookmark Count
             self.user.increase_user_post_bookmark_count()
             self.user.save()
@@ -38,22 +34,6 @@ class PostBookmark(Model):
             self.post.increase_post_bookmark_count()
             self.post.save()
 
-            # API Gateway
-            data = {
-                "user": self.user.id,
-                "username": self.user.username,
-                "image_url": self.post.thumbnail_media_url,
-                "content": self.post.title,
-                "community_id": self.post.community.id,
-                "post_id": self.post.id,
-                "club_id": None,
-                "forum_id": None,
-                "profile_id": None,
-            }
-
-            gateway_superclub.create_bookmark(**data)
-            gateway_post.create_bookmark(**data)
-
         else:
             if self.__is_active != self.is_active:
                 # Update User, Post PostBookmark Count
@@ -61,40 +41,17 @@ class PostBookmark(Model):
                     self.user.increase_user_post_bookmark_count()
                     self.post.increase_post_bookmark_count()
 
-                    # API Gateway
-                    data = {
-                        "user": self.user.id,
-                        "username": self.user.username,
-                        "image_url": self.post.thumbnail_media_url,
-                        "content": self.post.title,
-                        "community_id": self.post.community.id,
-                        "post_id": self.post.id,
-                        "club_id": None,
-                        "forum_id": None,
-                        "profile_id": None,
-                    }
-
-                    gateway_superclub.create_bookmark(**data)
-                    gateway_post.create_bookmark(**data)
-
                 else:
                     self.user.decrease_user_post_bookmark_count()
                     self.post.decrease_post_bookmark_count()
 
-                    # API Gateway
-                    data = {
-                        "user": self.user.id,
-                        "community_id": self.post.community.id,
-                        "post_id": self.post.id,
-                        "club_id": None,
-                        "forum_id": None,
-                        "profile_id": None,
-                    }
-
-                    gateway_superclub.delete_bookmark(**data)
-                    gateway_post.delete_bookmark(**data)
-
                 self.user.save()
                 self.post.save()
 
-        return super(PostBookmark, self).save(*args, **kwargs)
+        super(PostBookmark, self).save(*args, **kwargs)
+
+        if is_created:
+            BookmarkProducer().create_bookmark(self)
+        else:
+            if self.__is_active != self.is_active:
+                BookmarkProducer().create_bookmark(self) if self.is_active else BookmarkProducer().delete_bookmark(self)

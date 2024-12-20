@@ -10,6 +10,7 @@ from community.apps.profiles.models.mixins import (
     ProfilePostModelMixin,
     ProfileReportModelMixin,
     ProfileVisitModelMixin,
+    ProfileEmojiModelMixin,
 )
 
 # Bases
@@ -24,6 +25,7 @@ class Profile(
     ProfileReportModelMixin,
     ProfileLikeModelMixin,
     ProfilePointModelMixin,
+    ProfileEmojiModelMixin,
     Model,
 ):
     community = models.ForeignKey(

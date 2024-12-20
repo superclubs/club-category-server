@@ -2,6 +2,7 @@
 from community.bases.admin import Admin
 
 
+# Main Section
 class CommentLikeAdmin(Admin):
     list_display = ("comment", "user")
     search_fields = ("comment__post", "user__email")

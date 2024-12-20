@@ -1,12 +1,14 @@
 # Django
 from django.db.models import Q
 from django.utils.timezone import now
+from drf_yasg.utils import swagger_serializer_method
 
 # DRF
 from rest_framework import serializers
 
 from community.apps.communities.api.serializers import CommunityListSerializer
 from community.apps.communities.models import Community
+from community.apps.emojis.api.serializers import PostEmojiSerializer
 
 # Serializers
 from community.apps.post_tags.api.serializers import PostTagListSerializer
@@ -35,6 +37,7 @@ class PostRetrieveSerializer(ModelSerializer):
     next_post = serializers.SerializerMethodField()
     communities = serializers.SerializerMethodField()
     user_like_type = serializers.SerializerMethodField()
+    emojis = serializers.SerializerMethodField()
 
     class Meta:
         model = Post
@@ -67,6 +70,7 @@ class PostRetrieveSerializer(ModelSerializer):
             "created",
             "modified",
             # Count
+            "emoji_count",
             "total_like_count",
             "dislike_count",
             "like_count",
@@ -98,7 +102,19 @@ class PostRetrieveSerializer(ModelSerializer):
             "is_bookmarked",
             "is_reported",
             "user_like_type",
+            "emojis"
         )
+
+    def to_representation(self, obj):
+        representation = super().to_representation(obj)
+        request = self.context.get("request", None)
+        user = request.user if request else None
+
+        # User의 Post Like
+        if user.is_authenticated:
+            self.context["post_like"] = obj.post_likes.filter(user=user, is_active=True).first()
+
+        return representation
 
     def get_prev_post(self, obj):
         if not obj.board:
@@ -161,13 +177,7 @@ class PostRetrieveSerializer(ModelSerializer):
         return True
 
     def get_is_liked(self, obj):
-        request = self.context.get("request", None)
-        if not request:
-            return None
-        user = request.user
-        if not user.id:
-            return None
-        post_like = obj.post_likes.filter(user=user, is_active=True).first()
+        post_like = self.context.get("post_like")
         if not post_like:
             return False
         return True
@@ -213,13 +223,31 @@ class PostRetrieveSerializer(ModelSerializer):
         return True
 
     def get_user_like_type(self, obj):
-        request = self.context.get("request", None)
-        if not request:
-            return None
-        user = request.user
-        if not user.id:
-            return None
-        post_like = obj.post_likes.filter(user=user, is_active=True).first()
+        post_like = self.context.get("post_like")
         if not post_like:
             return None
         return post_like.type
+
+    @swagger_serializer_method(PostEmojiSerializer(many=True))
+    def get_emojis(self, obj):
+        if not hasattr(obj, "prefetched_post_emojis"):
+            return []
+
+        emojis = obj.prefetched_post_emojis
+
+        grouped_emojis = {}
+        for emoji in emojis:
+            emoji_code = emoji.emoji_code
+            if emoji_code not in grouped_emojis:
+                grouped_emojis[emoji_code] = {
+                    "emoji_code": emoji_code,
+                    "is_selected": emoji.is_selected,
+                    "count": emoji.count,
+                    "users": [],
+                }
+
+            if len(grouped_emojis[emoji_code]["users"]) < 5:
+                grouped_emojis[emoji_code]["users"].append(emoji.user)
+
+        return PostEmojiSerializer(grouped_emojis.values(), many=True).data
+

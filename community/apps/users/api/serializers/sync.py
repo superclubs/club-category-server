@@ -70,6 +70,11 @@ class UserSyncSerializer(ModelSerializer):
             "friend_count",
         )
 
+    def create(self, validated_data):
+        if "badge_title_en" in validated_data:
+            del validated_data["badge_title_en"]
+        return User.objects.create(**validated_data)
+
     def update(self, instance, validated_data):
         if badge_title_en := validated_data.pop("badge_title_en", None):
             validated_data["badge"] = Badge.available.filter(title_en=badge_title_en, model_type="COMMON").first()

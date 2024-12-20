@@ -38,7 +38,8 @@ class UserConsumerService(KafkaConsumerService):
 
         if instance := User.objects.filter(id=id).first():
             serializer = UserSyncSerializer(instance=instance, data=data, partial=True)
-            serializer.is_valid(raise_exception=True)
-            serializer.save()
         else:
-            User.objects.create(**data)
+            serializer = UserSyncSerializer(data=data)
+
+        serializer.is_valid(raise_exception=True)
+        serializer.save()

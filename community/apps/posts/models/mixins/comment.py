@@ -13,6 +13,8 @@ class PostCommentModelMixin(models.Model):
     comments_like_count = models.IntegerField(_("Comments Like Count"), default=0)
     comments_dislike_count = models.IntegerField(_("Comments Dislike Count"), default=0)
 
+    comments_emoji_count = models.IntegerField(_("Comments Emoji Count"), default=0)
+
     class Meta:
         abstract = True
 

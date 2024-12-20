@@ -4,7 +4,6 @@ from collections import Counter
 
 # Django
 from django.db import models, transaction
-from django.db.models import Count
 from django.utils.translation import gettext_lazy as _
 
 # DRF
@@ -35,7 +34,10 @@ class PostLikeModelMixin(models.Model):
         abstract = True
 
     def set_point(self):
-        self.point = self.dislike_point + self.like_point + self.bookmark_point + self.comment_point + self.visit_point
+        self.point = (
+            self.dislike_point + self.like_point + self.bookmark_point + self.comment_point + self.visit_point +
+            self.emoji_point
+        )
 
     def set_type_count(self):
         like_counts = self.post_likes.filter(is_active=True).values_list("type", flat=True)

@@ -10,8 +10,6 @@ from community.bases.admin import Admin
 
 
 # Main Section
-
-
 @admin.register(RankingGroup)
 class RankingGroupAdmin(Admin):
     list_display = ("model_type", "ranking_type", "is_active")
@@ -26,7 +24,6 @@ class RankingGroupAdmin(Admin):
     inlines = (CommunityRankingInline, PostRankingInline)
 
 
-@admin.register(CommunityRanking)
 class CommunityRankingAdmin(Admin):
     list_display = (
         "ranking_group",
@@ -60,7 +57,6 @@ class CommunityRankingAdmin(Admin):
     )
 
 
-@admin.register(PostRanking)
 class PostRankingAdmin(Admin):
     list_display = (
         "ranking_group",

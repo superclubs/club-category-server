@@ -1,6 +1,3 @@
-from django.contrib import admin
-
-from community.apps.visits.models.index import CommunityVisit, PostVisit
 from community.bases.admin import CountAdmin
 
 

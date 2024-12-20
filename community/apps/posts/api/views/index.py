@@ -28,7 +28,7 @@ from community.apps.posts.api.views.mixins import (
     PostLikeViewMixin,
     PostReportViewMixin,
     PostShareViewMixin,
-    PostTagViewMixin,
+    PostTagViewMixin, PostEmojiViewMixin,
 )
 
 # Permissions
@@ -129,6 +129,7 @@ class PostViewSet(
     PostBookmarkViewMixin,
     PostLikeViewMixin,
     PostReportViewMixin,
+    PostEmojiViewMixin,
     GenericViewSet,
 ):
     serializers = {
@@ -190,7 +191,7 @@ class PostViewSet(
         instance = self.get_object()
         serializer = self.get_serializer(instance)
         user = request.user
-        if user.id:
+        if user.is_authenticated:
             instance.create_post_visit(user)
         return Response(status=status.HTTP_200_OK, code=200, message="ok", data=serializer.data)
 

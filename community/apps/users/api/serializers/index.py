@@ -65,3 +65,12 @@ class UserProfileSerializer(ModelSerializer):
             "ring_color",
             "hash",
         )
+
+
+class UsernameSerializer(ModelSerializer):
+    class Meta:
+        model = User
+        fields = (
+            "id",
+            "username",
+        )
