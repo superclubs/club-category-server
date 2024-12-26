@@ -11,7 +11,7 @@ class BoardInline(StackedInline):
     extra = 0
 
 
-@admin.register(BoardGroup)
+# @admin.register(BoardGroup)
 class BoardGroupAdmin(Admin):
     list_display = ("community", "title")
     search_fields = ("community__title",)
