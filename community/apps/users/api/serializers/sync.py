@@ -61,6 +61,8 @@ class UserSyncSerializer(ModelSerializer):
             "wallet_address",
             "badge_title_en",
             "id_creta",
+            "is_staff",
+            "is_superuser",
             # Image
             "badge_image_url",
             "profile_image_url",
