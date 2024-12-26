@@ -521,8 +521,6 @@ if SENTRY_DSN := env("SENTRY_DSN", default=None):
         send_default_pii=True,
         traces_sample_rate=env.float("SENTRY_TRACES_SAMPLE_RATE", default=0.01),
     )
-
-
 # 34. KAFKA
 # ------------------------------------------------------------------------------
 KAFKA_BROKER_URLS = env.list("KAFKA_BROKER_URLS")

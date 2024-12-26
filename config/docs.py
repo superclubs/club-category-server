@@ -62,7 +62,7 @@ schema_url_patterns = [
 
 schema_view = get_schema_view(
     openapi.Info(
-        title=_("클럽 커뮤니티 API 문서"),
+        title=_("포럼 커뮤니티 API 문서"),
         default_version="v1",
         description=description,
         contact=openapi.Contact(email="dev@runners.im"),

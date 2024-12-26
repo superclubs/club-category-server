@@ -32,11 +32,12 @@ class UserConsumerService(KafkaConsumerService):
 
     @sync_to_async
     def sync(self, data: dict):
-        id = data.pop("id", None)
+        id = data.get("id", None)
         if not id:
             return
 
         if instance := User.objects.filter(id=id).first():
+            data.pop("id", None)
             serializer = UserSyncSerializer(instance=instance, data=data, partial=True)
         else:
             serializer = UserSyncSerializer(data=data)
