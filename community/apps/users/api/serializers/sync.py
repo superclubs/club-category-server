@@ -40,7 +40,7 @@ class AdminUserSyncSerializer(ModelSerializer):
 
 class UserSyncSerializer(ModelSerializer):
     id = serializers.IntegerField()
-    badge_title_en = serializers.CharField(required=False)
+    badge_title_en = serializers.CharField(required=False, allow_null=True, allow_blank=True)
 
     class Meta:
         model = User
