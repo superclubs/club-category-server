@@ -40,7 +40,7 @@ class AdminUserSyncSerializer(ModelSerializer):
 
 class UserSyncSerializer(ModelSerializer):
     id = serializers.IntegerField()
-    badge_title_en = serializers.CharField(required=False)
+    badge_title_en = serializers.CharField(required=False, allow_null=True, allow_blank=True)
 
     class Meta:
         model = User
@@ -61,6 +61,8 @@ class UserSyncSerializer(ModelSerializer):
             "wallet_address",
             "badge_title_en",
             "id_creta",
+            "is_staff",
+            "is_superuser",
             # Image
             "badge_image_url",
             "profile_image_url",
