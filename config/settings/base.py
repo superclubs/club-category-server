@@ -304,10 +304,9 @@ ADMIN_URL = env("DJANGO_ADMIN_URL", default="admin/")
 ADMINS = [("""RUNNERS""", "admin@runners.im")]
 MANAGERS = ADMINS
 
-ADMIN_MASTER_REORDER = ("community_users", "boards", "posts", "comments", "rankings")
+ADMIN_MASTER_REORDER = ("community_users", "posts", "comments", "rankings")
 ADMIN_USER_REORDER = (
     "community_users",
-    "boards",
 )
 ADMIN_REORDER = ADMIN_USER_REORDER
 
