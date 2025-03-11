@@ -128,7 +128,7 @@ class FriendRequestConsumerService(KafkaConsumerService):
 
     @sync_to_async
     def sync(self, data: dict):
-        id = data.pop("id", None)
+        id = data.get("id", None)
         if not id:
             return
 
